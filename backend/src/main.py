@@ -3,6 +3,7 @@ from fastapi import FastAPI
 import uvicorn
 import argparse
 from schemas.blockchain import Blockchain
+from routers import server_router_ws, server_router_api
 from constants import CONFIG_PATH
 
 def parse_args():
@@ -27,6 +28,9 @@ network_peers = [
         "http_url": f'http://{peer["host"]}:{peer["port"]}'
     } for peer in config
 ]
+
+app.include_router(server_router_ws.router)
+app.include_router(server_router_api.router, prefix="/api/v1")
 
 def main():
     uvicorn.run(
