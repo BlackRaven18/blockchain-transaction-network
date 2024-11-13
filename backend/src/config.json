@@ -1,0 +1,17 @@
+[
+    {
+        "id": "server1",
+        "host": "localhost",
+        "port": 8000
+    },
+    {
+        "id": "server2",
+        "host": "localhost",
+        "port": 8001
+    },
+    {
+        "id": "server3",
+        "host": "localhost",
+        "port": 8002
+    }
+]
