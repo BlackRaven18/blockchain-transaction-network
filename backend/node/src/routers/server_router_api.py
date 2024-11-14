@@ -5,6 +5,10 @@ from utils.utils import get_args, get_blockchain
 
 router = APIRouter()
 
+@router.post("/register")
+async def connect(public_key: str = Form()):
+    return {"message": "Server connected."}
+
 @router.post("/transactions/new")
 async def new_transaction(sender: str = Form(), recipient: str = Form(), file: UploadFile = File(None)):
     transaction = Transaction(sender=sender, recipient=recipient, data=file.filename)
