@@ -2,16 +2,28 @@
     {
         "id": "server1",
         "host": "localhost",
-        "port": 8000
+        "port": 8000,
+        "db": {
+            "host": "redis://localhost",
+            "port": 63791
+        }
     },
     {
         "id": "server2",
         "host": "localhost",
-        "port": 8001
+        "port": 8001,
+        "db": {
+            "host": "redis://localhost",
+            "port": 63792
+        }
     },
     {
         "id": "server3",
         "host": "localhost",
-        "port": 8002
+        "port": 8002,
+        "db": {
+            "host": "redis://localhost",
+            "port": 63793
+        }
     }
 ]
