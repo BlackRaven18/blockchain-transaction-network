@@ -1,11 +1,26 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 import json
 from services.transaction_service import validate_transaction
+from services.cryptography_service import verify_transaction
 from schemas.transaction import Transaction
 from utils.utils import get_args, get_blockchain
 
 router = APIRouter()
 
+@router.websocket("/transaction/new")
+async def new_transaction(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        while True:
+            transaction_string = await websocket.receive_text()
+            transaction = Transaction(**json.loads(transaction_string))
+            if verify_transaction(transaction):
+                await websocket.send_text("Transaction is valid")
+            else:
+                await websocket.send_text("Transaction is invalid")
+
+    except WebSocketDisconnect:
+        print("WebSocket connection closed")
 
 @router.websocket("/vote")
 async def vote(websocket: WebSocket):

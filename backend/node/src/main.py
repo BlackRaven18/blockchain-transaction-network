@@ -1,5 +1,5 @@
-import json
 from fastapi import FastAPI
+import json
 import uvicorn
 import argparse
 from schemas.blockchain import Blockchain
