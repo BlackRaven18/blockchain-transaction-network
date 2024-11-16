@@ -1,6 +1,6 @@
 import redis
 from schemas.blockchain import Blockchain
-from config import args
+from args import args
 
 class RedisClient:
     _client = None

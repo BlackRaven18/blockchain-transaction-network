@@ -3,7 +3,7 @@ import uvicorn
 from schemas.node import Node
 from routers import server_router_ws, server_router_api
 from clients.http_client import get_network_structure
-from config import args
+from args import args
 
 def get_network_peers(nodes: list[Node]):
     return [

@@ -3,24 +3,24 @@ import json
 
 db_client = RedisClient.get_client()
 
-def get_keys() -> list[str]:
+def get_public_keys() -> list[dict[str, any]]:
     keys = db_client.get('keys')
 
     if keys is None:
         return []
     
     return json.loads(keys)
-
-def add_key(key: str) -> str:
+#TODO: Add DTO dlass to represent key_data
+def add_public_key(key_data: dict[str, any]) -> str:
     print("Adding key...")
-    print(key)
+    print(key_data)
 
-    keys = get_keys()
+    keys = get_public_keys()
 
-    if key in keys:
+    if key_data in keys:
         return "Key already exists"
     
-    keys.append(key)
+    keys.append(key_data)
     db_client.set('keys', json.dumps(keys))
 
     return "Key added"

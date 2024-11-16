@@ -3,20 +3,21 @@ import json
 from services.transaction_service import validate_transaction
 from services.cryptography_service import verify_transaction
 from schemas.transaction import Transaction
-from config import args
+from args import args
 from repositories.blockchain_repository import get_blockchain
-from repositories.keys_repository import get_keys, add_key
+from repositories.keys_repository import add_public_key
 from services.key_service import broadcast_public_key
 
 router = APIRouter()
 
-@router.websocket("/add-public-key")
-async def add_public_key(websocket: WebSocket):
+@router.websocket("/register-public-key")
+async def register_public_key(websocket: WebSocket):
     await websocket.accept()
     try:
         while True:
-            public_key = await websocket.receive_text()
-            response = add_key(public_key)
+            public_key_data_raw = await websocket.receive_text()
+            public_key: dict[str, any] = json.loads(public_key_data_raw)        # { id, public_key }
+            response = add_public_key(public_key)
             await websocket.send_text(response)
 
     except WebSocketDisconnect:
@@ -28,7 +29,7 @@ async def register_client(websocket: WebSocket):
     try:
         while True:
             public_key = await websocket.receive_text()
-            response = add_key(public_key)
+            response = add_public_key(public_key)
             await broadcast_public_key(public_key)
 
             await websocket.send_text(response)

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, File, UploadFile, Form
 from schemas.transaction import Transaction
 from services.transaction_service import broadcast_vote
-from config import args
+from args import args
 from repositories.blockchain_repository import get_blockchain
 
 router = APIRouter()
