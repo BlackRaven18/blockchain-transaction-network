@@ -3,9 +3,11 @@ import json
 import uvicorn
 import argparse
 from schemas.blockchain import Blockchain
-from schemas.node import Node
+from schemas.node import Node, Database
 from routers import server_router_ws, server_router_api
 from clients.http_client import get_network_structure
+from clients.redis_client import RedisClient
+from config import args
 
 def get_network_peers(nodes: list[Node]):
     return [
@@ -16,28 +18,28 @@ def get_network_peers(nodes: list[Node]):
         } for node in nodes
     ]
 
-def parse_args():
-    parser = argparse.ArgumentParser(description="Run a FastAPI application with argparse")
-    parser.add_argument("--host", type=str, default="127.0.0.1", help="Host to run the FastAPI app on")
-    parser.add_argument("--port", type=int, default=8000, help="Port to run the FastAPI app on")
-    parser.add_argument("--reload", action="store_true", help="Enable auto-reload during development")
-    parser.add_argument("--id", type=str, default="server0", help="ID of the peer")
+def get_db_data(nodes: list[Node]) -> Database:
+    for node in nodes:
+        if node.id == args.id:
+            return node.db
     
-    return parser.parse_args()
-
-args = parse_args() 
 
 app = FastAPI()
-blockchain = Blockchain()
-nodes: list[Node] = get_network_structure()
-network_peers = get_network_peers(nodes)
-
-
 app.include_router(server_router_ws.router)
 app.include_router(server_router_api.router, prefix="/api/v1")
 
+nodes: list[Node] = get_network_structure()
+network_peers = get_network_peers(nodes)
+
+# Redis db init
+redis_client_data = get_db_data(nodes)
+
+RedisClient.get_client().set('blockchan', Blockchain().model_dump_json())
+
 def main():
 
+    print(args.port)
+    
     uvicorn.run(
         "main:app",
         port=args.port,

@@ -4,7 +4,7 @@
         "host": "localhost",
         "port": 8001,
         "db": {
-            "host": "redis://localhost",
+            "host": "localhost",
             "port": 63791
         }
     },
@@ -13,7 +13,7 @@
         "host": "localhost",
         "port": 8002,
         "db": {
-            "host": "redis://localhost",
+            "host": "localhost",
             "port": 63792
         }
     },
@@ -22,7 +22,7 @@
         "host": "localhost",
         "port": 8003,
         "db": {
-            "host": "redis://localhost",
+            "host": "localhost",
             "port": 63793
         }
     }
