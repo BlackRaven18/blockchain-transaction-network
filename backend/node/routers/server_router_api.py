@@ -16,7 +16,7 @@ async def new_transaction(sender: str = Form(), recipient: str = Form(), file: U
     # Send vote to other servers
     await broadcast_vote(transaction)
 
-    return {"message": "Transaction proposal submitted."}
+    return {"message": "Transaction proposal submitted. bebe"}
 
 @router.get("/chain")
 async def get_chain():

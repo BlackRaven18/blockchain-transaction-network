@@ -14,6 +14,7 @@ async def broadcast_vote(transaction: Transaction):
     vote_data_json = json.dumps(vote_data)
 
     vote_pool = get_network_ws_urls("/vote")
+    print(vote_pool)
 
     vote_tasks = [send_vote(server, vote_data_json) for server in vote_pool]
     results = await asyncio.gather(*vote_tasks, return_exceptions=True)

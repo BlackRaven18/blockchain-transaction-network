@@ -1,36 +1,36 @@
 version: '3.8'
 services:
-  redis-server-0:
-    image: redis:7.4.1-alpine
-    container_name: redis-server-0
-    restart: always
-    ports:
-      - '63791:6379'
-    command: redis-server --save 20 1 --loglevel warning
-    volumes: 
-      - redis-server-0-data:/data
-    
   redis-server-1:
     image: redis:7.4.1-alpine
     container_name: redis-server-1
     restart: always
     ports:
-      - '63792:6379'
+      - '63791:6379'
     command: redis-server --save 20 1 --loglevel warning
     volumes: 
       - redis-server-1-data:/data
-
+    
   redis-server-2:
     image: redis:7.4.1-alpine
     container_name: redis-server-2
     restart: always
     ports:
-      - '63793:6379'
+      - '63792:6379'
     command: redis-server --save 20 1 --loglevel warning
     volumes: 
       - redis-server-2-data:/data
 
+  redis-server-3:
+    image: redis:7.4.1-alpine
+    container_name: redis-server-3
+    restart: always
+    ports:
+      - '63793:6379'
+    command: redis-server --save 20 1 --loglevel warning
+    volumes: 
+      - redis-server-3-data:/data
+
 volumes:
-  redis-server-0-data:
   redis-server-1-data:
   redis-server-2-data:
+  redis-server-3-data:
