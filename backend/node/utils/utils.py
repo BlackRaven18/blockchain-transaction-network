@@ -2,6 +2,10 @@ def get_args():
     from main import args
     return args
 
+def get_db_data():
+    from main import redis_client_data
+    return redis_client_data
+
 def get_blockchain():
     from main import blockchain
     return blockchain

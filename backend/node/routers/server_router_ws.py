@@ -3,7 +3,8 @@ import json
 from services.transaction_service import validate_transaction
 from services.cryptography_service import verify_transaction
 from schemas.transaction import Transaction
-from utils.utils import get_args, get_blockchain
+from config import args
+from repositories.blockchain_repository import get_blockchain
 
 router = APIRouter()
 
@@ -27,7 +28,6 @@ async def vote(websocket: WebSocket):
     await websocket.accept()
     try:
         while True:
-            args = get_args()
             transaction_string = await websocket.receive_text()
             transaction = json.loads(transaction_string)
             vote_result = validate_transaction(transaction['transaction'])

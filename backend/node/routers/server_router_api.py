@@ -1,7 +1,8 @@
 from fastapi import APIRouter, File, UploadFile, Form
 from schemas.transaction import Transaction
 from services.transaction_service import broadcast_vote
-from utils.utils import get_args, get_blockchain
+from config import args
+from repositories.blockchain_repository import get_blockchain
 
 router = APIRouter()
 
@@ -28,4 +29,4 @@ async def get_current_transactions():
 
 @router.get("/id")
 async def get_id():
-    return {"id": get_args().id}
+    return {"id": args.id}
