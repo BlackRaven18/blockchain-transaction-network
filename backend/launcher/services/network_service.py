@@ -3,7 +3,7 @@ from nodes import nodes
 
 def start_nodes():
     for node in nodes:
-        command = f"start powershell -NoExit -Command \"python main.py --reload --id {node.id} --host {node.host} --port {node.port}\""
+        command = f"start powershell -NoExit -Command \"python main.py --id {node.id} --host {node.host} --port {node.port} --db_host {node.db.host} --db_port {node.db.port}\""
         print(command)
         try:
             subprocess.Popen(command, shell=True, cwd="../node")
