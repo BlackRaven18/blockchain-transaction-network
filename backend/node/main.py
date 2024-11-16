@@ -4,7 +4,7 @@ import uvicorn
 import argparse
 from schemas.blockchain import Blockchain
 from routers import server_router_ws, server_router_api
-from constants import CONFIG_PATH
+# from constants import CONFIG_PATH
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Run a FastAPI application with argparse")
@@ -19,15 +19,15 @@ args = parse_args()
 
 app = FastAPI()
 blockchain = Blockchain()
-config = json.load(open(CONFIG_PATH, "r"))
+# config = json.load(open(CONFIG_PATH, "r"))
 
-network_peers = [
-    {
-        "id": peer["id"], 
-        "ws_url": f'ws://{peer["host"]}:{peer["port"]}', 
-        "http_url": f'http://{peer["host"]}:{peer["port"]}'
-    } for peer in config
-]
+# network_peers = [
+#     {
+#         "id": peer["id"], 
+#         "ws_url": f'ws://{peer["host"]}:{peer["port"]}', 
+#         "http_url": f'http://{peer["host"]}:{peer["port"]}'
+#     } for peer in config
+# ]
 
 app.include_router(server_router_ws.router)
 app.include_router(server_router_api.router, prefix="/api/v1")
