@@ -1,7 +1,9 @@
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 from schemas.transaction import Transaction
-from services.key_service import get_private_key
+from services.key_service import get_private_key, generate_keys
+
+private_key, public_key = generate_keys()
 
 def sign_transaction(transaction: Transaction) -> str:
     private_key = get_private_key()

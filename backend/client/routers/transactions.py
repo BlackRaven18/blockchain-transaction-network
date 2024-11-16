@@ -7,14 +7,14 @@ from constants import CLIENT_ID
 router = APIRouter()
 
 class PortOptions(int, Enum):
-    port_8000 = 8000
     port_8001 = 8001
     port_8002 = 8002
+    port_8003 = 8003
 
 @router.post("/transactions/new")
 async def new_transaction(
     server_url: str = Form("localhost"), 
-    server_port: PortOptions = Form(PortOptions.port_8000),
+    server_port: PortOptions = Form(PortOptions.port_8001),
     recipient_id: str = Form(), 
     file: UploadFile = File(None)
     ):

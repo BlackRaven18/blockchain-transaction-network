@@ -5,8 +5,36 @@ from services.cryptography_service import verify_transaction
 from schemas.transaction import Transaction
 from config import args
 from repositories.blockchain_repository import get_blockchain
+from repositories.keys_repository import get_keys, add_key
+from services.key_service import broadcast_public_key
 
 router = APIRouter()
+
+@router.websocket("/add-public-key")
+async def add_public_key(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        while True:
+            public_key = await websocket.receive_text()
+            response = add_key(public_key)
+            await websocket.send_text(response)
+
+    except WebSocketDisconnect:
+        print("WebSocket connection closed")
+
+@router.websocket("/register-client")
+async def register_client(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        while True:
+            public_key = await websocket.receive_text()
+            response = add_key(public_key)
+            await broadcast_public_key(public_key)
+
+            await websocket.send_text(response)
+
+    except WebSocketDisconnect:
+        print("WebSocket connection closed")
 
 @router.websocket("/transaction/new")
 async def new_transaction(websocket: WebSocket):

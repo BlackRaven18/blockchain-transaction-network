@@ -2,6 +2,7 @@ from fastapi import FastAPI
 import uvicorn
 import argparse
 from routers import transactions
+from routers import network
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Run a FastAPI application with argparse")
@@ -15,7 +16,8 @@ def parse_args():
 args = parse_args() 
 
 app = FastAPI()
-app.include_router(transactions.router)
+app.include_router(network.router, prefix="/api/v1")
+app.include_router(transactions.router, prefix="/api/v1")
 
 def main():
     uvicorn.run(
