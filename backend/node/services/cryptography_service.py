@@ -1,13 +1,21 @@
-from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding
 from schemas.transaction import Transaction
-from services.key_service import get_public_key
+from repositories.keys_repository import get_public_key
 
 def verify_transaction(transaction: Transaction) -> bool:
+
     if not transaction.signature:
+        print("No signature to verify")
         return False  # No signature to verify
     
-    public_key = get_public_key()
+    public_key_pem = get_public_key(transaction.sender)
+
+    if public_key_pem is None:
+        print("Public key not found")
+        return False
+    
+    public_key = serialization.load_pem_public_key(public_key_pem.encode('utf-8'))
 
     serialized_data = transaction.serialize()
     try:

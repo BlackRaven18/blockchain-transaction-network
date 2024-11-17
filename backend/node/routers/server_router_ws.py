@@ -44,9 +44,12 @@ async def new_transaction(websocket: WebSocket):
         while True:
             transaction_string = await websocket.receive_text()
             transaction = Transaction(**json.loads(transaction_string))
+            print(transaction.model_dump_json(indent=4))
             if verify_transaction(transaction):
+                print("Transaction is valid")
                 await websocket.send_text("Transaction is valid")
             else:
+                print("Transaction is invalid")
                 await websocket.send_text("Transaction is invalid")
 
     except WebSocketDisconnect:

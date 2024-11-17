@@ -20,11 +20,3 @@ async def send_public_key(server: str, public_key: str) -> None:
             return response
     except Exception as e:
         print(f"Could not send public key to {server}: {e}")
-    
-def get_public_key():
-    with open("keys/public.pem", "rb") as key_file:
-        public_key = serialization.load_pem_public_key(
-            key_file.read()
-            )
-
-    return public_key
