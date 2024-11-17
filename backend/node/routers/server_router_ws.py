@@ -1,12 +1,12 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 import json
-from services.transaction_service import validate_transaction
 from services.cryptography_service import verify_transaction
 from schemas.transaction import Transaction
 from args import args
-from repositories.blockchain_repository import get_blockchain
+from repositories.blockchain_repository import get_blockchain, save_blockchain
 from repositories.keys_repository import add_public_key
 from services.key_service import broadcast_public_key
+from services.transaction_service import conduct_vote
 
 router = APIRouter()
 
@@ -18,6 +18,7 @@ async def register_public_key(websocket: WebSocket):
             public_key_data_raw = await websocket.receive_text()
             public_key: dict[str, any] = json.loads(public_key_data_raw)        # { id, public_key }
             response = add_public_key(public_key)
+            
             await websocket.send_text(response)
 
     except WebSocketDisconnect:
@@ -29,10 +30,11 @@ async def register_client(websocket: WebSocket):
     try:
         while True:
             public_key = await websocket.receive_text()
-            response = add_public_key(public_key)
-            await broadcast_public_key(public_key)
+            response = await broadcast_public_key(public_key)
 
-            await websocket.send_text(response)
+            print("Client registered")
+
+            await websocket.send_text("Client registered")
 
     except WebSocketDisconnect:
         print("WebSocket connection closed")
@@ -42,15 +44,12 @@ async def new_transaction(websocket: WebSocket):
     await websocket.accept()
     try:
         while True:
+            print("Received new transaction...")
             transaction_string = await websocket.receive_text()
             transaction = Transaction(**json.loads(transaction_string))
-            print(transaction.model_dump_json(indent=4))
-            if verify_transaction(transaction):
-                print("Transaction is valid")
-                await websocket.send_text("Transaction is valid")
-            else:
-                print("Transaction is invalid")
-                await websocket.send_text("Transaction is invalid")
+
+            response = await conduct_vote(args.id, transaction)
+            await websocket.send_text(response)
 
     except WebSocketDisconnect:
         print("WebSocket connection closed")
@@ -61,9 +60,11 @@ async def vote(websocket: WebSocket):
     try:
         while True:
             transaction_string = await websocket.receive_text()
-            transaction = json.loads(transaction_string)
-            vote_result = validate_transaction(transaction['transaction'])
+            transaction = Transaction(**json.loads(transaction_string))
+            vote_result = verify_transaction(transaction)
+
             print("Server " + args.id + " voted: " + str(vote_result))
+
             vote_data = {
                 'server_id': args.id,
                 'vote': vote_result,
@@ -80,13 +81,16 @@ async def accept_transaction(websocket: WebSocket):
     await websocket.accept()
     try:
         while True:
+            print("Adding transaction to blockchain...")
             blockchain = get_blockchain()
-            transaction_string = await websocket.receive_text()
-            transaction = Transaction(**json.loads(transaction_string))
-            blockchain.add_transaction(transaction.sender, transaction.recipient, transaction.data)
+            transaction_raw= await websocket.receive_text()
+            transaction = Transaction(**json.loads(transaction_raw))
+            blockchain.add_transaction(transaction.sender, transaction.recipient, transaction.data, transaction.signature)
+            save_blockchain(blockchain)
+
             for transaction in blockchain.current_transactions:
                 print(transaction.model_dump_json(indent=4))
-            # print(json.dumps(blockchain.current_transactions))
+
             await websocket.send_text("Transaction added to the blockchain")
 
     except WebSocketDisconnect:

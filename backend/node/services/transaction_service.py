@@ -2,67 +2,55 @@ import json
 import asyncio
 import websockets
 from schemas.transaction import Transaction
-from utils.utils import get_args, get_network_ws_urls
+from utils.utils import get_network_ws_urls
 
-async def broadcast_vote(transaction: Transaction):
-    votes = []
-    vote_data = {
-        "server_id": get_args().id,
-        "transaction": transaction.model_dump(),
-    }
-    vote_counter = 0
-    vote_data_json = json.dumps(vote_data)
+async def conduct_vote(master_node_id: str,transaction: Transaction):
+    print("Conducting vote...")
+    votes_counter = 0
 
     vote_pool = get_network_ws_urls("/vote")
-    print(vote_pool)
+    vote_tasks = [get_vote(node_vote_url, transaction) for node_vote_url in vote_pool]
 
-    vote_tasks = [send_vote(server, vote_data_json) for server in vote_pool]
-    results = await asyncio.gather(*vote_tasks, return_exceptions=True)
-    
-    # Process responses
-    vote_counter = 0
-    for result in results:
-        if isinstance(result, dict) and result.get('vote') is True:
-            vote_counter += 1
-            votes.append(result)
+    print("Waiting for votes...")
+    votes = await asyncio.gather(*vote_tasks, return_exceptions=True)
 
+    print("Counting votes...")
     for vote in votes:
+        vote = json.loads(vote)
         if vote['vote'] is True:
-            vote_counter += 1
+            votes_counter += 1
 
-    if vote_counter >= 2:
-        print("Vote approved")
+    if votes_counter >= 2:
+        await broadcast_transaction(transaction)
+        return("Transaction approved, broadcasting to other nodes")
+    
+    return("Transaction rejected")
 
-        accept_transaction_pool = get_network_ws_urls("/accept_transaction")
+async def broadcast_transaction(transaction: Transaction):
+    print("Broadcasting transaction...")
+    transaction_pool = get_network_ws_urls("/accept_transaction")
+    send_transaction_tasks = [send_transaction(node_accept_transaction_url, transaction) for node_accept_transaction_url in transaction_pool]
 
-        send_transaction_tasks = [send_transaction(server, transaction) for server in accept_transaction_pool]
-        send_transactions_results = await asyncio.gather(*send_transaction_tasks, return_exceptions=True)
+    await asyncio.gather(*send_transaction_tasks, return_exceptions=True)
 
-        for result in send_transactions_results:
-            print(result)
-
-    else:
-        print("Vote rejected")
-
-async def send_vote(server: str, vote_data_json: str):
+async def get_vote(node_vote_url, transaction: Transaction):
+    print("Getting vote...")
     try:
-        async with websockets.connect(server) as websocket:
-            await websocket.send(vote_data_json)
-            vote_response = json.loads(await websocket.recv())
+        async with websockets.connect(node_vote_url) as websocket:
+            await websocket.send(transaction.model_dump_json())
+            vote_response = await websocket.recv()
             return vote_response
     except Exception as e:
-        print(f"Could not send vote to {server}: {e}")
+        print(f"Could not send vote to {node_vote_url}: {e}")
         return None 
-    
-async def send_transaction(server: str, transaction: Transaction):
+
+
+async def send_transaction(node_accept_transaction_url: str, transaction: Transaction):
     try:
-        async with websockets.connect(server) as websocket:
+        async with websockets.connect(node_accept_transaction_url) as websocket:
             transaction_json = transaction.model_dump_json()
             await websocket.send(transaction_json)
             response = await websocket.recv()
             print(response)
     except Exception as e:
-        print(f"Could not send transaction to {server}: {e}")
-
-def validate_transaction(transaction) -> bool:
-    return True  
+        print(f"Could not send transaction to {node_accept_transaction_url}: {e}")

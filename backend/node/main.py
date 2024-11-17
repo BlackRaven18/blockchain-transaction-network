@@ -11,7 +11,7 @@ def get_network_peers(nodes: list[Node]):
             "id": node.id, 
             "ws_url": f'ws://{node.host}:{node.port}', 
             "http_url": f'http://{node.host}:{node.port}'
-        } for node in nodes if node.id != args.id
+        } for node in nodes # if node.id != args.id
     ]
     
 app = FastAPI()
@@ -22,12 +22,8 @@ nodes: list[Node] = get_network_structure()
 network_peers = get_network_peers(nodes)
 
 def main():
-    
-    uvicorn.run(
-        "main:app",
-        port=args.port,
-        reload=True
-    )
+    pass
 
 if __name__ == "__main__":
+    uvicorn.run("main:app", host=args.host, port=args.port, reload=True)
     main()

@@ -1,27 +1,12 @@
-from fastapi import APIRouter, File, UploadFile, Form
-from schemas.transaction import Transaction
-from services.transaction_service import broadcast_vote
+from fastapi import APIRouter
 from args import args
 from repositories.blockchain_repository import get_blockchain
 
 router = APIRouter()
 
-@router.post("/register")
-async def connect(public_key: str = Form()):
-    return {"message": "Server connected."}
-
-@router.post("/transactions/new")
-async def new_transaction(sender: str = Form(), recipient: str = Form(), file: UploadFile = File(None)):
-    transaction = Transaction(sender=sender, recipient=recipient, data=file.filename)
-
-    # Send vote to other servers
-    await broadcast_vote(transaction)
-
-    return {"message": "Transaction proposal submitted. bebe"}
-
 @router.get("/chain")
 async def get_chain():
-    return {"length": len(get_blockchain().chain), "chain": get_blockchain().chain}
+    return {"blockchain": get_blockchain()}
 
 @router.get("/current_transactions")
 async def get_current_transactions():

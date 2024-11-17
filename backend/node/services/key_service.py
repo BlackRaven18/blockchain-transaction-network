@@ -5,6 +5,8 @@ from cryptography.hazmat.primitives import serialization
 from utils.utils import get_network_ws_urls
 
 async def broadcast_public_key(public_key: str) -> None:
+    print("Broadcasting public key...")
+    print(public_key)
     broadcast_pool = get_network_ws_urls("/register-public-key")
 
     tasks = [send_public_key(server, public_key) for server in broadcast_pool]
