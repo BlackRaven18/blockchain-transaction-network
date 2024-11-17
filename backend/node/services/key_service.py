@@ -1,7 +1,6 @@
 
 import asyncio
 import websockets
-from cryptography.hazmat.primitives import serialization
 from utils.utils import get_network_ws_urls
 
 async def broadcast_public_key(public_key: str) -> None:

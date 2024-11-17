@@ -25,14 +25,9 @@ def add_public_key(key_data: dict[str, any]) -> str:
     print("Adding key...")
 
     keys = get_public_keys()
-
-    print("key_data", key_data)
-    print("key_type", type(key_data))
-
     
     if key_data in keys:
         return "Key already exists"
-    
     
     keys.append(key_data)
     db_client.set('keys', json.dumps(keys))

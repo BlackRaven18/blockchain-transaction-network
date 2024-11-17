@@ -10,13 +10,3 @@ def generate_keys() -> tuple[rsa.RSAPrivateKey, rsa.RSAPublicKey]:
     public_key = private_key.public_key()
 
     return private_key, public_key
-
-
-def get_private_key():
-    with open("keys/private.pem", "rb") as key_file:
-        private_key = serialization.load_pem_private_key(
-            key_file.read(),
-            password=None,
-            )
-
-    return private_key
