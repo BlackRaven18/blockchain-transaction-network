@@ -6,7 +6,7 @@ from args import args
 from repositories.blockchain_repository import get_blockchain, save_blockchain
 from repositories.keys_repository import add_public_key
 from services.key_service import broadcast_public_key
-from services.transaction_service import conduct_vote
+from services.transaction_service import conduct_vote, broadcast_transaction
 
 router = APIRouter()
 
@@ -48,8 +48,13 @@ async def new_transaction(websocket: WebSocket):
             transaction_string = await websocket.receive_text()
             transaction = Transaction(**json.loads(transaction_string))
 
-            response = await conduct_vote(args.id, transaction)
-            await websocket.send_text(response)
+            is_transaction_accepted = await conduct_vote(transaction)
+            
+            if is_transaction_accepted is True:
+                await broadcast_transaction(transaction)
+                await websocket.send_text("Transaction accepted")
+            else:
+                await websocket.send_text("Transaction rejected")
 
     except WebSocketDisconnect:
         print("WebSocket connection closed")
