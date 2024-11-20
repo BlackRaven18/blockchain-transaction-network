@@ -2,7 +2,7 @@ from typing import Any
 from pydantic import BaseModel
 from schemas.block import Block
 from schemas.transaction import Transaction
-from constants import MAX_BLOCK_SIZE
+from utils.utils import get_config
 
 class Blockchain(BaseModel):
     chain: list[Block] = []
@@ -40,7 +40,7 @@ class Blockchain(BaseModel):
 
         self.current_transactions.append(transaction)
 
-        if len(self.current_transactions) >= MAX_BLOCK_SIZE:
+        if len(self.current_transactions) >= get_config()["max_block_size"]:
             print("No to tu to mnie kurde nie ma no nie...")
             self.create_block(self.last_block.hash)
 

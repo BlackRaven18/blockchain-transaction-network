@@ -2,7 +2,7 @@ from fastapi import FastAPI
 import uvicorn
 from schemas.node import Node
 from routers import server_router_ws, server_router_api
-from clients.http_client import get_network_structure
+from clients.http_client import get_network_config
 from args import args
 
 def get_network_peers(nodes: list[Node]):
@@ -18,7 +18,9 @@ app = FastAPI()
 app.include_router(server_router_ws.router)
 app.include_router(server_router_api.router, prefix="/api/v1")
 
-nodes: list[Node] = get_network_structure()
+
+config = get_network_config()
+nodes: list[Node] = [Node(**node) for node in config["nodes"]]
 network_peers = get_network_peers(nodes)
 
 def main():

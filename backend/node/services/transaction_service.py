@@ -2,7 +2,7 @@ import json
 import asyncio
 import websockets
 from schemas.transaction import Transaction
-from utils.utils import get_network_ws_urls
+from utils.utils import get_network_ws_urls, get_config
 
 async def conduct_vote(master_node_id: str,transaction: Transaction):
     print("Conducting vote...")
@@ -20,7 +20,7 @@ async def conduct_vote(master_node_id: str,transaction: Transaction):
         if vote['vote'] is True:
             votes_counter += 1
 
-    if votes_counter >= 2:
+    if votes_counter >= get_config()["min_approvals_to_accept_transaction"]:
         await broadcast_transaction(transaction)
         return("Transaction approved, broadcasting to other nodes")
     
