@@ -1,29 +1,33 @@
-[
-    {
-        "id": "server1",
-        "host": "localhost",
-        "port": 8001,
-        "db": {
+{
+    "max_block_size": 2,
+    "min_approvals_to_accept_transaction": 2,
+    "nodes": [
+        {
+            "id": "server1",
             "host": "localhost",
-            "port": 63791
-        }
-    },
-    {
-        "id": "server2",
-        "host": "localhost",
-        "port": 8002,
-        "db": {
+            "port": 8001,
+            "db": {
+                "host": "localhost",
+                "port": 63791
+            }
+        },
+        {
+            "id": "server2",
             "host": "localhost",
-            "port": 63792
-        }
-    },
-    {
-        "id": "server3",
-        "host": "localhost",
-        "port": 8003,
-        "db": {
+            "port": 8002,
+            "db": {
+                "host": "localhost",
+                "port": 63792
+            }
+        },
+        {
+            "id": "server3",
             "host": "localhost",
-            "port": 63793
+            "port": 8003,
+            "db": {
+                "host": "localhost",
+                "port": 63793
+            }
         }
-    }
-]
+    ]
+}

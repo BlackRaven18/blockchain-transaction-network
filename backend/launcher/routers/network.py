@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from services.network_service import start_nodes, get_nodes
+from utils.utils import get_config
 from schemas.node import Node
 
 router = APIRouter()
@@ -13,4 +14,9 @@ async def start_network():
 async def get_network_structure():
     nodes: list[Node] = get_nodes()
     return {"nodes": nodes}
+
+@router.get("/config")
+async def get_network_config():
+    config = get_config()
+    return config
     
