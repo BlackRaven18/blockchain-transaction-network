@@ -11,7 +11,7 @@ def get_network_peers(nodes: list[Node]):
             "id": node.id, 
             "ws_url": f'ws://{node.host}:{node.port}', 
             "http_url": f'http://{node.host}:{node.port}'
-        } for node in nodes # if node.id != args.id
+        } for node in nodes if node.id != args.id
     ]
     
 app = FastAPI()

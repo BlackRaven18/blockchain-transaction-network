@@ -1,5 +1,9 @@
+import json
+
 import websockets
+
 from schemas.transaction import Transaction
+
 from services.cryptography_service import sign_transaction
 
 async def send_transaction(server_url: str, server_port: int, transaction: Transaction):
@@ -7,11 +11,11 @@ async def send_transaction(server_url: str, server_port: int, transaction: Trans
     transaction.signature = sign_transaction(transaction)
     Transaction.signature = transaction.signature
 
-    print(f"Sending transaction to ws://{server_url}:{server_port}/transaction/new")
+    print(f"Sending transaction to ws://{server_url}:{server_port}/ws")
     try:
-        async with websockets.connect(f"ws://{server_url}:{server_port}/transaction/new") as websocket:
-            transaction_json = transaction.model_dump_json()
-            await websocket.send(transaction_json)
+        async with websockets.connect(f"ws://{server_url}:{server_port}/ws") as websocket:
+            payload = {"type": "new-transaction-proposal", "data": transaction.model_dump_json()}
+            await websocket.send(json.dumps(payload))
             response = await websocket.recv()
             print(response)
     except Exception as e:

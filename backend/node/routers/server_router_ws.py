@@ -1,102 +1,72 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+
 import json
-from services.cryptography_service import verify_transaction
+from typing import List
+
 from schemas.transaction import Transaction
-from args import args
-from repositories.blockchain_repository import get_blockchain, save_blockchain
+
 from repositories.keys_repository import add_public_key
-from services.key_service import broadcast_public_key
-from services.transaction_service import conduct_vote, broadcast_transaction
+
+from services.cryptography_service import verify_transaction
+from services.network import broadcast_action, conduct_vote, save_transaction
 
 router = APIRouter()
 
-@router.websocket("/register-public-key")
-async def register_public_key(websocket: WebSocket):
+active_connections: List[WebSocket] = []
+
+@router.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
+    active_connections.append(websocket)
     try:
         while True:
-            public_key_data_raw = await websocket.receive_text()
-            public_key: dict[str, any] = json.loads(public_key_data_raw)        # { id, public_key }
-            response = add_public_key(public_key)
-            
+            message = await websocket.receive_text()
+            response = await handle_message(message)
             await websocket.send_text(response)
-
     except WebSocketDisconnect:
-        print("WebSocket connection closed")
+        active_connections.remove(websocket)
 
-@router.websocket("/register-client")
-async def register_client(websocket: WebSocket):
-    await websocket.accept()
+async def handle_message(message: str):
+    """Handle incoming WebSocket messages."""
     try:
-        while True:
-            public_key = await websocket.receive_text()
-            response = await broadcast_public_key(public_key)
+        data = json.loads(message)
+        action = data.get("type")
+        payload = data.get("data")
 
-            print("Client registered")
+        response = None
+        #-------------------------------------------------------------------------------
+        # External actions (from clients)
+        #-------------------------------------------------------------------------------
+        if action == "new-transaction-proposal":
 
-            await websocket.send_text("Client registered")
+            transaction = Transaction(**json.loads(payload))
+            result = await conduct_vote(transaction)
+            response = result
 
-    except WebSocketDisconnect:
-        print("WebSocket connection closed")
+        elif action == "register-client":
 
-@router.websocket("/transaction/new")
-async def new_transaction(websocket: WebSocket):
-    await websocket.accept()
-    try:
-        while True:
-            print("Received new transaction...")
-            transaction_string = await websocket.receive_text()
-            transaction = Transaction(**json.loads(transaction_string))
+            print("Adding public key...")
+            print(payload)
+            response = await broadcast_action("accept-client", payload)
+        #-------------------------------------------------------------------------------
+        # Internal actions (from other nodes)
+        #-------------------------------------------------------------------------------
+        elif action == "vote":
 
-            is_transaction_accepted = await conduct_vote(transaction)
-            
-            if is_transaction_accepted is True:
-                await broadcast_transaction(transaction)
-                await websocket.send_text("Transaction accepted")
-            else:
-                await websocket.send_text("Transaction rejected")
+            transaction = Transaction(**json.loads(payload))
+            result = verify_transaction(transaction)
+            response = result
 
-    except WebSocketDisconnect:
-        print("WebSocket connection closed")
+        elif action == "accept-transaction":
+            transaction = Transaction(**json.loads(payload))
+            response = save_transaction(transaction)
 
-@router.websocket("/vote")
-async def vote(websocket: WebSocket):
-    await websocket.accept()
-    try:
-        while True:
-            transaction_string = await websocket.receive_text()
-            transaction = Transaction(**json.loads(transaction_string))
-            vote_result = verify_transaction(transaction)
+        elif action == "accept-client":
+            response = add_public_key(payload)
+        else:
+            print(f"Unknown action: {action}")
 
-            print("Server " + args.id + " voted: " + str(vote_result))
-
-            vote_data = {
-                'server_id': args.id,
-                'vote': vote_result,
-                'transaction': json.loads(transaction_string)
-            }
-            vote_data_json = json.dumps(vote_data)
-            await websocket.send_text(vote_data_json)
-
-    except WebSocketDisconnect:
-        print("WebSocket connection closed")
-
-@router.websocket("/accept_transaction")
-async def accept_transaction(websocket: WebSocket):
-    await websocket.accept()
-    try:
-        while True:
-            print("Adding transaction to blockchain...")
-            blockchain = get_blockchain()
-            transaction_raw= await websocket.receive_text()
-            transaction = Transaction(**json.loads(transaction_raw))
-            blockchain.add_transaction(transaction.sender, transaction.recipient, transaction.data, transaction.signature)
-            save_blockchain(blockchain)
-
-            for transaction in blockchain.current_transactions:
-                print(transaction.model_dump_json(indent=4))
-
-            await websocket.send_text("Transaction added to the blockchain")
-
-    except WebSocketDisconnect:
-        print("WebSocket connection closed")
+        print("Response: " + str(response))
+        return response
+    except json.JSONDecodeError:
+        print("Invalid message format received.")
