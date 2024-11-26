@@ -20,7 +20,7 @@ class Block(BaseModel):
         block_string = self.model_dump_json().encode()
         return hashlib.sha256(block_string).hexdigest()
     
-    def mine_block(self, difficulty):
+    async def mine_block(self, difficulty):
         target = '0' * difficulty
         start_time = time.time()
 
@@ -31,3 +31,5 @@ class Block(BaseModel):
         end_time = time.time()
         print(f"Block mined: {self.hash} (Nonce: {self.nonce})")
         print(f"Mining took {end_time - start_time:.4f} seconds\n")
+
+        return self.model_dump_json()

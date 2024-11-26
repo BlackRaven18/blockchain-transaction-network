@@ -8,7 +8,7 @@ from schemas.transaction import Transaction
 from repositories.keys_repository import add_public_key
 
 from services.cryptography_service import verify_transaction
-from services.network import broadcast_action, conduct_vote, save_transaction
+from services.network import broadcast_action, conduct_vote, save_transaction, check_if_should_mine_block, mine_block, cancel_mine_block, verify_block
 
 router = APIRouter()
 
@@ -41,7 +41,10 @@ async def handle_message(message: str):
 
             transaction = Transaction(**json.loads(payload))
             result = await conduct_vote(transaction)
+
             response = result
+
+            # await check_if_should_mine_block()
 
         elif action == "register-client":
 
@@ -62,7 +65,26 @@ async def handle_message(message: str):
             response = save_transaction(transaction)
 
         elif action == "accept-client":
+
             response = add_public_key(payload)
+
+        elif action == "mine-block":
+            await mine_block()
+
+            response = "Block mined"
+
+        elif action == "cancel-and-verify-block":
+
+            await cancel_mine_block()
+            await verify_block()
+
+            response = "Block mined and verified"
+
+
+        elif action == "accept-block":
+
+            pass
+
         else:
             print(f"Unknown action: {action}")
 

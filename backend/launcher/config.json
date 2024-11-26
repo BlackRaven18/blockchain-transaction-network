@@ -1,6 +1,7 @@
 {
-    "max_block_size": 2,
+    "max_block_size": 1,
     "min_approvals_to_accept_transaction": 2,
+    "mining_difficulty": 5,
     "nodes": [
         {
             "id": "server1",
