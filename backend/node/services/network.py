@@ -3,7 +3,7 @@ import json
 import websockets
 import asyncio
 
-from utils.utils import nodes, get_config
+from utils.utils import get_config, get_nodes
 
 from schemas.transaction import Transaction
 from schemas.block import Block
@@ -16,7 +16,7 @@ mine_block_task = None
 
 async def establish_websocket_connections():
     connections_manager = ConnectionsManager()
-    for node in nodes:
+    for node in get_nodes():
         url = f"ws://{node.host}:{node.port}/ws"
         websocket_client = WebSocketClient(url)
         await websocket_client.connect()
