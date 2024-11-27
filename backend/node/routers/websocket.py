@@ -3,6 +3,7 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 import json
 from typing import List
 
+from schemas.public_key import PublicKey
 from schemas.transaction import Transaction
 from schemas.block import Block
 
@@ -75,8 +76,8 @@ async def handle_message(message: str):
             response = save_transaction(transaction)
 
         elif action == "accept-client":
-
-            response = add_public_key(payload)
+            public_key = PublicKey(**json.loads(payload))
+            response = add_public_key(public_key)
 
         elif action == "mine-block":
             mine_block()
