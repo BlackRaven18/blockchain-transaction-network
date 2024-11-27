@@ -27,16 +27,16 @@ class Blockchain(BaseModel):
     def create_block(self) -> Block:
 
         block = Block(
-            index=len(self.chain) + 1,
+            index=len(self.chain),
             hash="", # will be calculated during the mining process
             transactions=self.current_transactions,
             previous_block_hash=self.last_block.hash
         )
 
-        self.current_transactions = []
         return block
 
     def add_block(self, block: Block) -> None:
+        self.current_transactions = []
         self.chain.append(block)
     
     def add_transaction(self, sender: str, recipient: str, data: str, signature: str) -> None:

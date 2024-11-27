@@ -6,12 +6,13 @@ import asyncio
 from utils.utils import nodes, get_config
 
 from schemas.transaction import Transaction
+from schemas.block import Block
 
 from repositories.blockchain_repository import get_blockchain, save_blockchain
 
 from network.ConnectionsManager import ConnectionsManager, WebSocketClient
 
-task = None
+mine_block_task = None
 
 async def establish_websocket_connections():
     connections_manager = ConnectionsManager()
@@ -25,46 +26,64 @@ async def establish_websocket_connections():
 
     return "network connections established"
 
-async def verify_block():
+def verify_block(mined_block: Block):
     print("Verifying block...")
+    blockchain = get_blockchain()
+    last_block = blockchain.last_block
+
+    if mined_block.previous_block_hash != last_block.hash:
+        print("Block does not have correct previous hash.")
+        return "rejected"
+
+    if mined_block.hash != mined_block.calculate_hash():
+        print("Block hash is not correct.")
+        return "rejected"
+    
     return "accepted"
 
 def cancel_mine_block():
-    global task
+    global mine_block_task
 
     print("Cancelling block mining...")
-    is_cancelled = task.cancel()
+    is_cancelled = mine_block_task.cancel()
 
     if is_cancelled:
-        print("Block mining cancelled")
+        response = "Block mining cancelled"
     else:
-        print("Block mining not cancelled")
+        response = "Block mining not cancelled"
 
-    return "bebe2"
+    return response
 
 def mine_block():
-    global task
+    global mine_block_task
 
     blockchain = get_blockchain()
     new_block = blockchain.create_block()
 
-    task = asyncio.create_task(new_block.mine_block(get_config()["mining_difficulty"]))
-    task.add_done_callback(lambda task_result_handler: asyncio.create_task(handle_mining_result(task)))
+    mine_block_task = asyncio.create_task(new_block.mine_block(get_config()["mining_difficulty"]))
+    mine_block_task.add_done_callback(lambda task_result_handler: asyncio.create_task(handle_mining_result(mine_block_task)))
 
     return "Mining started"
 
-async def handle_mining_result(task: asyncio.Task):
+async def handle_mining_result(mine_block_task: asyncio.Task):
     """
     This function will be called once the mining task completes.
     """
     try:
-        task_result = await task
-        print("Task result: " + str(task_result))
+        mined_block = await mine_block_task
+        print("Minned block: " + str(mined_block.model_dump_json()))
 
-        if task_result is not None and task.cancelled() is not True:
-            print("I MINNED!!!!")
-            response = await broadcast_action("cancel-and-verify-block", {}, receive_responses=False)
-            print("Block mining results: " + str(response))
+        if mined_block is not None and mine_block_task.cancelled() is not True:
+            print("I mined a block!!!!")
+            responses = await broadcast_action("cancel-and-verify-block", mined_block.model_dump_json())
+
+            print("Block mining results: " + str(responses))
+            for response in responses:
+                if response == "rejected":
+                    print("One of the nodes rejected the block.")
+                    return
+            await broadcast_action("accept-block", mined_block.model_dump_json(), receive_responses=False)
+
     except asyncio.CancelledError:
         print("Mining task was cancelled due to cancellation request.")
     except Exception as e:
@@ -83,6 +102,13 @@ def save_transaction(transaction: Transaction):
     save_blockchain(blockchain)
 
     return "Transaction added to the blockchain"
+
+def save_block(block: Block):
+    blockchain = get_blockchain()
+    blockchain.add_block(block)
+    save_blockchain(blockchain)
+
+    return "Block added to the blockchain"
 
 async def conduct_vote(transaction: Transaction):
     print("Conducting vote...")

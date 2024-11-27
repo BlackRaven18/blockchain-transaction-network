@@ -4,11 +4,12 @@ import json
 from typing import List
 
 from schemas.transaction import Transaction
+from schemas.block import Block
 
 from repositories.keys_repository import add_public_key
 
 from services.cryptography_service import verify_transaction
-from services.network import broadcast_action, conduct_vote, save_transaction, check_if_should_mine_block, mine_block, cancel_mine_block, verify_block
+from services.network import broadcast_action, conduct_vote, save_transaction, save_block, check_if_should_mine_block, mine_block, cancel_mine_block, verify_block
 
 router = APIRouter()
 
@@ -22,7 +23,9 @@ async def websocket_endpoint(websocket: WebSocket):
         while True:
             message = await websocket.receive_text()
             response = await handle_message(message)
-            await websocket.send_text(response)
+
+            if response is not None:
+                await websocket.send_text(response)
     except WebSocketDisconnect:
         active_connections.remove(websocket)
 
@@ -32,6 +35,12 @@ async def handle_message(message: str):
         data = json.loads(message)
         action = data.get("type")
         payload = data.get("data")
+
+        """ 
+        response is a message that will be send to the client via websocket, 
+        so if user don't read it, it will remain in websocket queue.
+        response should be created only if user will read it!
+        """
 
         response = None
         #-------------------------------------------------------------------------------
@@ -69,17 +78,15 @@ async def handle_message(message: str):
             response = add_public_key(payload)
 
         elif action == "mine-block":
-            response = mine_block()
+            mine_block()
 
         elif action == "cancel-and-verify-block":
             cancel_mine_block()
-
-            response = "Block mining interrupted (cancelled)"
-
+            response = verify_block(Block(**json.loads(payload)))
 
         elif action == "accept-block":
-
-            pass
+            save_block(Block(**json.loads(payload)))
+            print("Block added to the blockchain")
 
         else:
             print(f"Unknown action: {action}")

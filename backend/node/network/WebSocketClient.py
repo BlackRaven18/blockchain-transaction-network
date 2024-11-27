@@ -21,7 +21,7 @@ class WebSocketClient:
         if self.websocket:
             await self.websocket.send(message)
             response = await self.websocket.recv()
-            print(f"Sent: {message}")
+            # print(f"Sent: {message}")
             return response
         
     async def send(self, message: str):
@@ -30,7 +30,7 @@ class WebSocketClient:
         """
         if self.websocket:
             await self.websocket.send(message)
-            print(f"Sent: {message}")
+            # print(f"Sent: {message}")
 
     async def disconnect(self):
         """
