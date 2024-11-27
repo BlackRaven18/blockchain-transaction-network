@@ -29,39 +29,53 @@ async def verify_block():
     print("Verifying block...")
     return "accepted"
 
-async def cancel_mine_block():
+def cancel_mine_block():
     global task
 
-    if task is not None and not task.done():
-        print("Cancelling block mining...")
-        task.cancel()
-        task = None
+    print("Cancelling block mining...")
+    is_cancelled = task.cancel()
+
+    if is_cancelled:
         print("Block mining cancelled")
+    else:
+        print("Block mining not cancelled")
 
     return "bebe2"
 
-async def mine_block():
+def mine_block():
     global task
 
     blockchain = get_blockchain()
     new_block = blockchain.create_block()
 
     task = asyncio.create_task(new_block.mine_block(get_config()["mining_difficulty"]))
-    task.add_done_callback(lambda task: save_blockchain(blockchain))
+    task.add_done_callback(lambda task_result_handler: asyncio.create_task(handle_mining_result(task)))
 
-    task_result = await task
+    return "Mining started"
 
-    if task_result is not None:
-        response = await broadcast_action("cancel-and-verify-block", {})
-        print("Block mining results: " + str(response))
-    
-    return "bebe"
+async def handle_mining_result(task: asyncio.Task):
+    """
+    This function will be called once the mining task completes.
+    """
+    try:
+        task_result = await task
+        print("Task result: " + str(task_result))
+
+        if task_result is not None and task.cancelled() is not True:
+            print("I MINNED!!!!")
+            response = await broadcast_action("cancel-and-verify-block", {}, receive_responses=False)
+            print("Block mining results: " + str(response))
+    except asyncio.CancelledError:
+        print("Mining task was cancelled due to cancellation request.")
+    except Exception as e:
+        print(f"Error while processing mining result: {e}")
 
 async def check_if_should_mine_block():
     blockchain = get_blockchain()
 
     if blockchain.should_mine_block():
-        await broadcast_action("mine-block", {})
+        print("Should mine block...")
+        await broadcast_action("mine-block", {}, receive_responses=False)
 
 def save_transaction(transaction: Transaction):
     blockchain = get_blockchain()
@@ -89,17 +103,15 @@ async def conduct_vote(transaction: Transaction):
     return "Transaction rejected"
 
 
-async def broadcast_action(action: str, data: dict[str, any]):
+async def broadcast_action(action: str, data: dict[str, any], receive_responses = True):
     connection_manager = ConnectionsManager()
-
+    results = ""
     payload = {"type": action, "data": data}
 
-    # url_pool = [f"ws://{node.host}:{node.port}/ws" for node in nodes]
-    # tasks = [send_action(url, payload) for url in url_pool]
-
-    # results = await asyncio.gather(*tasks, return_exceptions=True)
-    results = await connection_manager.send_to_all(json.dumps(payload))
-    # results = "hmm..."
+    if receive_responses:
+        results = await connection_manager.send_and_receive_from_all(json.dumps(payload))
+    else:
+        await connection_manager.send_to_all(json.dumps(payload))
 
     print("Broadcast results: " + str(results))
 

@@ -1,7 +1,10 @@
 from pydantic import BaseModel
+
 import datetime
 import hashlib
 import time
+import asyncio
+
 from schemas.transaction import Transaction
 
 class Block(BaseModel):
@@ -25,6 +28,7 @@ class Block(BaseModel):
         start_time = time.time()
 
         while self.hash[:difficulty] != target:
+            await asyncio.sleep(0)
             self.nonce += 1
             self.hash = self.calculate_hash()
 

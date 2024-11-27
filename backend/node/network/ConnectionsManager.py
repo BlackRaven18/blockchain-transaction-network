@@ -22,10 +22,13 @@ class ConnectionsManager(metaclass=SingletonMeta):
         print("Removing connection...")
         self.web_socket_clients.remove(web_socket_client)
 
-    async def send_to_all(self, message: str):
+    async def send_and_receive_from_all(self, message: str):
         responses = []
         for web_socket_client in self.web_socket_clients:
-            response = await web_socket_client.send(message)
+            response = await web_socket_client.send_and_receive(message)
             responses.append(response)
-            # responses.append(await web_socket_client.receive())
         return responses
+    
+    async def send_to_all(self, message: str):
+        for web_socket_client in self.web_socket_clients:
+            await web_socket_client.send(message)

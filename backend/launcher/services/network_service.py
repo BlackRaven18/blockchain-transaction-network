@@ -30,7 +30,3 @@ async def establish_connections():
             print(f"POST {response.request.url} -> {response.status_code}: {response.text}")
 
         return responses
-        # for node in get_config()["nodes"]:
-        #     url = f"http://{node['host']}:{node['port']}/api/v1/establish-connection"
-        #     response = client.post(url, json={})
-        #     print(response.json())

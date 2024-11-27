@@ -44,7 +44,7 @@ async def handle_message(message: str):
 
             response = result
 
-            # await check_if_should_mine_block()
+            await check_if_should_mine_block()
 
         elif action == "register-client":
 
@@ -69,16 +69,12 @@ async def handle_message(message: str):
             response = add_public_key(payload)
 
         elif action == "mine-block":
-            await mine_block()
-
-            response = "Block mined"
+            response = mine_block()
 
         elif action == "cancel-and-verify-block":
+            cancel_mine_block()
 
-            await cancel_mine_block()
-            await verify_block()
-
-            response = "Block mined and verified"
+            response = "Block mining interrupted (cancelled)"
 
 
         elif action == "accept-block":

@@ -1,5 +1,4 @@
 import websockets
-import asyncio
 
 class WebSocketClient:
     def __init__(self, server_url: str):
@@ -13,32 +12,25 @@ class WebSocketClient:
         Nawiązanie połączenia z serwerem WebSocket.
         """
         self.websocket = await websockets.connect(self.server_url)
-        #self.task = asyncio.create_task(self.receive())
         print("Connected to WebSocket server.")
 
-    async def send(self, message: str):
+    async def send_and_receive(self, message: str):
         """
-        Wysyłanie wiadomości do serwera WebSocket.
+        Wysyłanie wiadomości do serwera WebSocket i oczekiwanie na odpowiedz
         """
         if self.websocket:
             await self.websocket.send(message)
             response = await self.websocket.recv()
             print(f"Sent: {message}")
             return response
-
-    # async def receive(self):
-    #     """
-    #     Odbieranie wiadomości z serwera WebSocket.
-    #     """
-    #     # while self.keep_running:
-    #     try:
-    #         if self.websocket:
-    #             response = await self.websocket.recv()
-    #             print(f"Received: {response}")
-    #     except websockets.ConnectionClosed:
-    #         print("Connection closed.")
-    #         self.keep_running = False
-    #         #break
+        
+    async def send(self, message: str):
+        """
+        Wysyłanie wiadomości do serwera WebSocket.
+        """
+        if self.websocket:
+            await self.websocket.send(message)
+            print(f"Sent: {message}")
 
     async def disconnect(self):
         """
