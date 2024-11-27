@@ -9,7 +9,8 @@ class RedisClient:
     def __init_db(cls):
         print("Initializing Redis database...")
         if cls._client is not None:
-            cls._client.set('blockchan', "{}")
+            blockchain = Blockchain()
+            cls._client.set('blockchan', blockchain.model_dump_json())
 
     @classmethod
     def get_client(cls):
