@@ -1,5 +1,7 @@
 from fastapi import APIRouter, File, UploadFile, Form
+
 from enum import Enum
+
 from schemas.transaction import Transaction
 from services.transaction_service import send_transaction
 from args import args
@@ -21,7 +23,6 @@ async def new_transaction(
     
     transaction = Transaction(sender=args.id, recipient=recipient_id, data=file.filename)
 
-    # Send vote to other servers
     await send_transaction(server_url, server_port.value, transaction)
 
     return {"message": "Transaction proposal submitted."}

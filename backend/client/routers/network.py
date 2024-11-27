@@ -1,5 +1,7 @@
-from fastapi import APIRouter, File, UploadFile, Form
+from fastapi import APIRouter, Form
+
 from enum import Enum
+
 from services.network_service import share_public_key
 
 router = APIRouter()
