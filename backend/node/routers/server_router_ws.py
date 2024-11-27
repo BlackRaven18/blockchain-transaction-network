@@ -9,7 +9,8 @@ from schemas.block import Block
 from repositories.keys_repository import add_public_key
 
 from services.cryptography_service import verify_transaction
-from services.network import broadcast_action, conduct_vote, save_transaction, save_block, check_if_should_mine_block, mine_block, cancel_mine_block, verify_block
+from services.blockchain import conduct_vote, save_transaction, save_block, check_if_should_mine_block, mine_block, cancel_mine_block, verify_block
+from services.network import broadcast_action
 
 router = APIRouter()
 
