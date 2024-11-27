@@ -2,7 +2,7 @@ from fastapi import APIRouter
 
 from args import args
 
-from repositories.blockchain_repository import get_blockchain
+from repositories.blockchain import get_blockchain
 
 from services.network import establish_websocket_connections
 

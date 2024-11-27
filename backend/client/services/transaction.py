@@ -4,7 +4,7 @@ import websockets
 
 from schemas.transaction import Transaction
 
-from services.cryptography_service import sign_transaction
+from services.cryptography import sign_transaction
 
 async def send_transaction(server_url: str, server_port: int, transaction: Transaction):
 

@@ -2,7 +2,7 @@ from typing import Any
 from pydantic import BaseModel
 from schemas.block import Block
 from schemas.transaction import Transaction
-from utils.utils import get_config
+from config import get_config
 
 class Blockchain(BaseModel):
     chain: list[Block] = []

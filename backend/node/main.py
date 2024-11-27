@@ -1,14 +1,14 @@
 from fastapi import FastAPI
+import uvicorn
 
 from contextlib import asynccontextmanager
 
-import uvicorn
+from routers import websocket
+from routers import api
 
-from routers import server_router_ws, server_router_api
+from clients.redis import RedisClient
 
-from clients.redis_client import RedisClient
-
-from utils.utils import init_config
+from config import init_config
 
 from args import args
     
@@ -22,8 +22,8 @@ async def lifespan(app: FastAPI):
     pass
 
 app = FastAPI(lifespan=lifespan)
-app.include_router(server_router_ws.router)
-app.include_router(server_router_api.router, prefix="/api/v1")
+app.include_router(websocket.router)
+app.include_router(api.router, prefix="/api/v1")
 
 
 if __name__ == "__main__":

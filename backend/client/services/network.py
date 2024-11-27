@@ -1,7 +1,7 @@
 import websockets
 import json
 from cryptography.hazmat.primitives import serialization
-from services.cryptography_service import public_key
+from services.cryptography import public_key
 from args import args
 
 async def share_public_key(server_url: str, server_port: int) -> str:

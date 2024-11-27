@@ -1,5 +1,6 @@
-from clients.redis_client import RedisClient
 import json
+
+from clients.redis import RedisClient
 
 db_client = RedisClient.get_client()
 

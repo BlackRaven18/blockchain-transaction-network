@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from services.network_service import start_nodes, establish_connections
+from services.network import start_nodes, establish_connections
 from utils.utils import get_config
 
 router = APIRouter()

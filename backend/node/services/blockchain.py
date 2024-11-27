@@ -1,13 +1,13 @@
 import asyncio
 
-from utils.utils import get_config
+from config import get_config
 
 from schemas.transaction import Transaction
 from schemas.block import Block
 
 from services.network import broadcast_action
 
-from repositories.blockchain_repository import get_blockchain, save_blockchain
+from repositories.blockchain import get_blockchain, save_blockchain
 
 def verify_block(mined_block: Block):
     print("Verifying block...")

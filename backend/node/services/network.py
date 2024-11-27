@@ -2,7 +2,7 @@ import json
 
 import websockets
 
-from utils.utils import get_nodes
+from config import get_nodes
 
 from network.ConnectionsManager import ConnectionsManager, WebSocketClient
 
