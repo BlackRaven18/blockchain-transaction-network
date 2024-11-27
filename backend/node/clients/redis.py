@@ -17,8 +17,9 @@ class RedisClient:
         if cls._client is None:
             host = args.db_host
             port = args.db_port
+            index = args.db_index
             try:
-                cls._client = redis.Redis(host=host, port=port, decode_responses=True)
+                cls._client = redis.Redis(host=host, port=port, db=index, decode_responses=True)
                 cls.__init_db()
             except ConnectionError as e:
                 print(f"Error connecting to Redis server: {e}")

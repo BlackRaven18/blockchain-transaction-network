@@ -9,7 +9,8 @@
             "port": 8001,
             "db": {
                 "host": "localhost",
-                "port": 63791
+                "port": 63791,
+                "index": 0
             }
         },
         {
@@ -18,7 +19,8 @@
             "port": 8002,
             "db": {
                 "host": "localhost",
-                "port": 63792
+                "port": 63791,
+                "index": 1
             }
         },
         {
@@ -27,7 +29,8 @@
             "port": 8003,
             "db": {
                 "host": "localhost",
-                "port": 63793
+                "port": 63791,
+                "index": 2
             }
         }
     ]

@@ -9,10 +9,14 @@ running_processes = {}
 
 def start_nodes():
     for node in get_config()["nodes"]:
-        command = f"start powershell -NoExit -Command \"python main.py --id {node["id"]} --host {node["host"]} --port {node["port"]} --db_host {node["db"]["host"]} --db_port {node["db"]["port"]}\""
-        print(command)
+
+        run_command = f"python main.py --id {node['id']} --host {node['host']} --port {node['port']} --db_host {node['db']['host']} --db_port {node['db']['port']} --db_index {node['db']['index']}"
+
+        start_terminal_command = f"start powershell -NoExit -Command \"{run_command}\""
+        print(start_terminal_command)
+        
         try:
-            subprocess.Popen(command, shell=True, cwd="../node")
+            subprocess.Popen(start_terminal_command, shell=True, cwd="../node")
         except Exception as e:
             print(f"Error starting node {node['id']}: {e}")
 
