@@ -3,6 +3,8 @@ from pydantic import BaseModel
 import datetime
 import hashlib
 import time
+import json
+
 import asyncio
 
 from schemas.transaction import Transaction
@@ -16,7 +18,8 @@ class Block(BaseModel):
     previous_block_hash: str
 
     def calculate_hash(self):
-        block_string = self.model_dump_json().encode()
+        block_dict = self.model_dump(exclude={"hash"})
+        block_string = str(block_dict).encode()
         return hashlib.sha256(block_string).hexdigest()
     
     async def mine_block(self, difficulty) -> "Block":
