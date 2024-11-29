@@ -1,7 +1,8 @@
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding
 from schemas.transaction import Transaction
-from repositories.keys_repository import get_public_key
+from repositories.public_key import get_public_key
+
 
 def verify_transaction(transaction: Transaction) -> bool:
 
@@ -28,6 +29,6 @@ def verify_transaction(transaction: Transaction) -> bool:
             ),
             hashes.SHA256(),
         )
-        return True
+        return "valid"
     except Exception:
-        return False 
+        return "invalid" 
