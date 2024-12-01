@@ -4,7 +4,7 @@ from utils.utils import get_config
 
 router = APIRouter()
 
-@router.post("/start_network")
+@router.post("/start-network")
 async def start_network():
     start_nodes()
     return {"message": "Network started."}

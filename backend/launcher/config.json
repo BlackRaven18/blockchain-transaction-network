@@ -32,6 +32,36 @@
                 "port": 63791,
                 "index": 2
             }
+        },
+        {
+            "id": "server4",
+            "host": "localhost",
+            "port": 8003,
+            "db": {
+                "host": "localhost",
+                "port": 63791,
+                "index": 2
+            }
+        },
+        {
+            "id": "server5",
+            "host": "localhost",
+            "port": 8003,
+            "db": {
+                "host": "localhost",
+                "port": 63791,
+                "index": 2
+            }
+        },
+        {
+            "id": "serve6",
+            "host": "localhost",
+            "port": 8003,
+            "db": {
+                "host": "localhost",
+                "port": 63791,
+                "index": 2
+            }
         }
     ]
 }
