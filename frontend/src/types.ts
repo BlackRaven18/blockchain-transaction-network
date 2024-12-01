@@ -1,3 +1,5 @@
+import { Edge } from "@xyflow/react";
+
 export interface BlockchainNode {
     id: string;
     host: string;

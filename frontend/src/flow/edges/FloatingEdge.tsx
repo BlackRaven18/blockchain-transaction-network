@@ -8,11 +8,17 @@ interface FloatingEdgeProps {
     target: string;
     markerEnd?: string;
     style?: React.CSSProperties;
+    data?: {
+        showAnimation?: boolean; 
+    };
 }
 
-function FloatingEdge({ id, source, target, markerEnd, style }: FloatingEdgeProps) {
+function FloatingEdge({ id, source, target, markerEnd, style, data }: FloatingEdgeProps) {
+
     const sourceNode = useInternalNode(source);
     const targetNode = useInternalNode(target);
+
+    console.log(data?.showAnimation);
 
     if (!sourceNode || !targetNode) {
         return null;
@@ -30,17 +36,12 @@ function FloatingEdge({ id, source, target, markerEnd, style }: FloatingEdgeProp
     return (
         <>
             <BaseEdge path={edgePath} markerEnd={markerEnd} />
-            <circle r="8" fill="#ff0073">
-                <animateMotion dur="2s" repeatCount="indefinite" path={edgePath} />
-            </circle>
+            {data?.showAnimation && (
+                <circle r="8" fill="#ff0073">
+                    <animateMotion dur="2s" repeatCount="indefinite" path={edgePath} />
+                </circle>
+            )}
         </>
-        // <path
-        //   id={id}
-        //   className="react-flow__edge-path"
-        //   d={edgePath}
-        //   markerEnd={markerEnd}
-        //   style={style}
-        // />
     );
 }
 
