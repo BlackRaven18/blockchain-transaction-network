@@ -18,8 +18,6 @@ function FloatingEdge({ id, source, target, markerEnd, style, data }: FloatingEd
     const sourceNode = useInternalNode(source);
     const targetNode = useInternalNode(target);
 
-    console.log(data?.showAnimation);
-
     if (!sourceNode || !targetNode) {
         return null;
     }

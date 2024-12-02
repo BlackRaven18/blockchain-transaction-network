@@ -7,7 +7,8 @@ const BlockchainContext = createContext({
     nodes: [] as BlockchainNode[],
     flowNodes: [] as Node[],
     flowEdges: [] as Edge[],
-    toggleAnimation: () => {}
+    toggleAnimation: () => { },
+    animateServerEdges: (nodeId: string) => { },
 });
 
 export const BlockchainProvider = ({ children }: PropsWithChildren) => {
@@ -57,17 +58,17 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
     const getFlowEdges = (nodes: BlockchainNode[]) => {
         const initialEdges = nodes.flatMap((sourceNode) =>
             nodes.map((targetNode) => {
-                    return {
-                        id: `edge-${sourceNode.id}-${targetNode.id}`,
-                        source: sourceNode.id,
-                        target: targetNode.id,
-                        type: "floating",
-                        data: { showAnimation: false },
-                        markerEnd: {
-                            type: MarkerType.ArrowClosed,
-                            color: '#b1b1b7',
-                        },
-                    };
+                return {
+                    id: `edge-${sourceNode.id}-${targetNode.id}`,
+                    source: sourceNode.id,
+                    target: targetNode.id,
+                    type: "floating",
+                    data: { showAnimation: false },
+                    markerEnd: {
+                        type: MarkerType.ArrowClosed,
+                        color: '#b1b1b7',
+                    },
+                };
             }).filter(edge => edge.source !== edge.target) // Usuwamy wartości null
         );
 
@@ -85,8 +86,29 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
         setFlowEdges(updatedEdges);
     }
 
+    const animateServerEdges = (nodeId: string) => {
+
+        const updatedEdges = flowEdges.map((edge) => (
+            edge.source === nodeId ? { ...edge, data: { ...edge.data, showAnimation: true } } : edge
+        ))
+
+        setFlowEdges(updatedEdges);
+        // const edges = [...flowEdges];
+        // console.log(edges)
+
+        // edges.forEach((edge) => {
+        //     if (edge.source === nodeId && edge.data){
+        //         edge.data.showAnimation = true
+        //     }
+        // })
+
+        // console.log("edges", edges)
+
+        // setFlowEdges(edges);
+    }
+
     return (
-        <BlockchainContext.Provider value={{ nodes, flowNodes, flowEdges, toggleAnimation }}>
+        <BlockchainContext.Provider value={{ nodes, flowNodes, flowEdges, toggleAnimation, animateServerEdges }}>
             {children}
         </BlockchainContext.Provider>
     )
