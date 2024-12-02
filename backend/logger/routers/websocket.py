@@ -16,6 +16,7 @@ async def websocket_endpoint(websocket: WebSocket):
     try:
         while True:
             data = await websocket.receive_text()
+            print(data)
             await notify_consumers(data)
 
     except WebSocketDisconnect:
@@ -25,7 +26,7 @@ async def websocket_endpoint(websocket: WebSocket):
 @router.websocket("/register-consumer")
 async def forward(websocket: WebSocket):
     await websocket.accept()
-    
+
     consumers.append(websocket)
     print("---Consumer registered---")
 
