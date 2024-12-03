@@ -12,6 +12,7 @@ export interface BlockchainNode {
 }
 
 export interface BlockchainConfig {
+    logger_port: number;
     max_block_size: number;
     min_approvals_to_accept_transaction: number;
     mining_difficulty: number;

@@ -1,5 +1,5 @@
 import { Box, Button } from "@mui/material";
-import { useBlockchain } from "../contexts/BlockchainContext";
+import { useBlockchain } from "../contexts/Blockchain";
 
 export default function SideMenu() {
 

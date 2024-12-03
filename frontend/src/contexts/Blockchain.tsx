@@ -93,18 +93,6 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
         ))
 
         setFlowEdges(updatedEdges);
-        // const edges = [...flowEdges];
-        // console.log(edges)
-
-        // edges.forEach((edge) => {
-        //     if (edge.source === nodeId && edge.data){
-        //         edge.data.showAnimation = true
-        //     }
-        // })
-
-        // console.log("edges", edges)
-
-        // setFlowEdges(edges);
     }
 
     return (

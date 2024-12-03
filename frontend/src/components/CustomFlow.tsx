@@ -1,5 +1,5 @@
 import { ReactFlow, Background, Controls, Position, MarkerType } from "@xyflow/react";
-import { useBlockchain } from "../contexts/BlockchainContext";
+import { useBlockchain } from "../contexts/Blockchain";
 import FloatingEdge from "../flow/edges/FloatingEdge";
 import FloatingNode from "../flow/nodes/FloatingNode";
 

@@ -1,8 +1,18 @@
+import { Icon, Stack, styled, Typography } from '@mui/material';
 import { Handle, Position, useConnection } from '@xyflow/react';
+import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 
 interface NodeProps {
     id: string;
 }
+
+const AnimatedHourglass = styled(HourglassBottomIcon)({
+    animation: "spin 2s linear infinite", // Define the animation
+    "@keyframes spin": {
+      "0%": { transform: "rotate(0deg)" },
+      "100%": { transform: "rotate(360deg)" },
+    },
+  });
 
 export default function FloatingNode({ id }: NodeProps) {
     const connection = useConnection();
@@ -25,8 +35,11 @@ export default function FloatingNode({ id }: NodeProps) {
                 {(!connection.inProgress || isTarget) && (
                     <Handle className="customHandle" position={Position.Left} type="target" isConnectableStart={false} />
                 )}
-
-                {id}
+                <Stack direction={"column"}>
+                    {id}
+                    <Typography style={{ fontSize: "10px" }}>State: Mining</Typography>
+                    <HourglassBottomIcon />
+                </Stack>
             </div>
         </div>
     );
