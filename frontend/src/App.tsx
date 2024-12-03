@@ -11,8 +11,8 @@ import { BlockchainLoggerProvider } from './contexts/BlockchainLogger';
 function App() {
 
     return (
-        <BlockchainLoggerProvider>
-            <BlockchainProvider >
+        <BlockchainProvider >
+            <BlockchainLoggerProvider>
                 <ReactFlowProvider>
                     <Box sx={{
                         display: 'flex',
@@ -30,8 +30,8 @@ function App() {
                         </Grid2>
                     </Box>
                 </ReactFlowProvider >
-            </BlockchainProvider>
-        </BlockchainLoggerProvider>
+            </BlockchainLoggerProvider>
+        </BlockchainProvider>
     );
 }
 

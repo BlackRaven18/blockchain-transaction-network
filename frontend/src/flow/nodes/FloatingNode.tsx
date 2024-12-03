@@ -4,6 +4,7 @@ import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 
 interface NodeProps {
     id: string;
+    data: any;
 }
 
 const AnimatedHourglass = styled(HourglassBottomIcon)({
@@ -14,7 +15,7 @@ const AnimatedHourglass = styled(HourglassBottomIcon)({
     },
   });
 
-export default function FloatingNode({ id }: NodeProps) {
+export default function FloatingNode({ id, data }: NodeProps) {
     const connection = useConnection();
 
     const isTarget = connection.inProgress && connection.fromNode.id !== id;
@@ -37,7 +38,7 @@ export default function FloatingNode({ id }: NodeProps) {
                 )}
                 <Stack direction={"column"}>
                     {id}
-                    <Typography style={{ fontSize: "10px" }}>State: Mining</Typography>
+                    <Typography style={{ fontSize: "10px" }}>{"state:" + data?.state || "no info"}</Typography>
                     <HourglassBottomIcon />
                 </Stack>
             </div>

@@ -9,6 +9,7 @@ const BlockchainContext = createContext({
     flowEdges: [] as Edge[],
     toggleAnimation: () => { },
     animateServerEdges: (nodeId: string) => { },
+    updateNodeState: (nodeId: string, state: string) => { },
 });
 
 export const BlockchainProvider = ({ children }: PropsWithChildren) => {
@@ -47,7 +48,10 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
             return {
                 id: node.id,
                 position: { x, y },
-                data: { label: node.id },
+                data: { 
+                    label: node.id,
+                    state: "undefined",
+                },
                 type: "floating",
             };
         });
@@ -95,8 +99,19 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
         setFlowEdges(updatedEdges);
     }
 
+    const updateNodeState = (nodeId: string, state: string) => {
+        console.log("Updating node state...")
+        console.log("Node ID:", nodeId)
+        console.log("Node state:", state)
+        const updatedNodes = flowNodes.map((node) =>
+            node.id === nodeId ? { ...node, data: { ...node.data, state: state } } : node
+        );
+        console.log("Updated nodes:", updatedNodes);
+        setFlowNodes(updatedNodes);
+    }
+
     return (
-        <BlockchainContext.Provider value={{ nodes, flowNodes, flowEdges, toggleAnimation, animateServerEdges }}>
+        <BlockchainContext.Provider value={{ nodes, flowNodes, flowEdges, toggleAnimation, animateServerEdges, updateNodeState }}>
             {children}
         </BlockchainContext.Provider>
     )
