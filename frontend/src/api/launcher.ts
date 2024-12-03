@@ -1,8 +1,11 @@
 import axios from "axios"
-import { Block } from "typescript"
 import { BlockchainConfig } from "../types"
 
 const LAUNCHER_URL = 'http://localhost:8000/api/v1'
+
+const startLogger = async () => {
+    return await axios.post(`${LAUNCHER_URL}/run-logger`)
+}
 
 const startNetwork = async () => {
     return await axios.post(`${LAUNCHER_URL}/start-network`)
@@ -19,6 +22,7 @@ const getConfig = async (): Promise<BlockchainConfig> => {
 }
 
 export {
+    startLogger,
     startNetwork,
     establishConnections,
     getConfig,
