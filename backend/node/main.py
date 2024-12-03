@@ -7,6 +7,7 @@ from routers import websocket
 from routers import api
 
 from clients.redis import RedisClient
+from clients.logger import connect_to_logger, log
 
 from config import init_config
 
@@ -16,6 +17,8 @@ from args import args
 async def lifespan(app: FastAPI):
     init_config()
     RedisClient.get_client()
+    await connect_to_logger()
+    await log("Hi there!")
 
     yield
 

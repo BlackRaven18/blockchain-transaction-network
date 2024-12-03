@@ -23,4 +23,5 @@ class RedisClient:
                 cls.__init_db()
             except ConnectionError as e:
                 print(f"Error connecting to Redis server: {e}")
+                print("Closing the application...")
         return cls._client

@@ -13,6 +13,8 @@ from services.cryptography import verify_transaction
 from services.blockchain import conduct_vote, save_transaction, save_block, check_if_should_mine_block, mine_block, cancel_mine_block, verify_block
 from services.network import broadcast_action
 
+from clients.logger import log
+
 router = APIRouter()
 
 active_connections: List[WebSocket] = []
@@ -62,6 +64,7 @@ async def handle_message(message: str):
             print("Adding public key...")
             print(payload)
             response = await broadcast_action("accept-client", payload)
+            await log('client-registered')
         #-------------------------------------------------------------------------------
         # Internal actions (from other nodes)
         #-------------------------------------------------------------------------------
@@ -78,7 +81,8 @@ async def handle_message(message: str):
         elif action == "accept-client":
             public_key = PublicKey(**json.loads(payload))
             response = add_public_key(public_key)
-
+            await log('client-registered')
+            
         elif action == "mine-block":
             mine_block()
 

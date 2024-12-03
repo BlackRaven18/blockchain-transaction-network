@@ -1,4 +1,5 @@
 {
+    "logger_port": 9000,
     "max_block_size": 2,
     "min_approvals_to_accept_transaction": 2,
     "mining_difficulty": 4,
@@ -25,36 +26,6 @@
         },
         {
             "id": "server3",
-            "host": "localhost",
-            "port": 8003,
-            "db": {
-                "host": "localhost",
-                "port": 63791,
-                "index": 2
-            }
-        },
-        {
-            "id": "server4",
-            "host": "localhost",
-            "port": 8003,
-            "db": {
-                "host": "localhost",
-                "port": 63791,
-                "index": 2
-            }
-        },
-        {
-            "id": "server5",
-            "host": "localhost",
-            "port": 8003,
-            "db": {
-                "host": "localhost",
-                "port": 63791,
-                "index": 2
-            }
-        },
-        {
-            "id": "serve6",
             "host": "localhost",
             "port": 8003,
             "db": {

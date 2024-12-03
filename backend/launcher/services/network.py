@@ -6,13 +6,11 @@ import asyncio
 from utils.utils import get_config
 
 running_processes = {}
-logger_port = 9000
 
 
 def start_logger():
-    global logger_port
     
-    run_command = f"uvicorn main:app --port {logger_port} --reload "
+    run_command = f"uvicorn main:app --port {get_config()['logger_port']} --reload "
     start_terminal_command = f'start powershell -NoExit -Command "{run_command}"'
 
     try:

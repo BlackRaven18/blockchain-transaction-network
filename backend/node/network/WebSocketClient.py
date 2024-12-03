@@ -11,8 +11,11 @@ class WebSocketClient:
         """
         Nawiązanie połączenia z serwerem WebSocket.
         """
-        self.websocket = await websockets.connect(self.server_url)
-        print("Connected to WebSocket server.")
+        try:
+            self.websocket = await websockets.connect(self.server_url)
+            print(f"Connected to {self.server_url}")
+        except Exception as e:
+            print(f"Error connecting to {self.server_url}: {e}")
 
     async def send_and_receive(self, message: str):
         """
