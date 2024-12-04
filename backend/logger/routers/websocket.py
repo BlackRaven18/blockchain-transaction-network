@@ -1,5 +1,7 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
+import asyncio
+
 from typing import List
 
 router = APIRouter()
@@ -7,6 +9,7 @@ router = APIRouter()
 active_connections = []
 consumers: List[WebSocket] = []
 
+forward_delay_time = 2 # delay of network response
 
 @router.websocket("/consume-logs")
 async def websocket_endpoint(websocket: WebSocket):
@@ -17,6 +20,7 @@ async def websocket_endpoint(websocket: WebSocket):
         while True:
             data = await websocket.receive_text()
             print(data)
+            await asyncio.sleep(forward_delay_time)
             await notify_consumers(data)
 
     except WebSocketDisconnect:

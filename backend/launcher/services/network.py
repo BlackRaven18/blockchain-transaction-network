@@ -7,7 +7,6 @@ from utils.utils import get_config
 
 running_processes = {}
 
-
 def start_logger():
     
     run_command = f"uvicorn main:app --port {get_config()['logger_port']} --reload "

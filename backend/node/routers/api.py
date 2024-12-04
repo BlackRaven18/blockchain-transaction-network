@@ -6,14 +6,11 @@ from repositories.blockchain import get_blockchain
 
 from services.network import establish_websocket_connections
 
-from clients.logger import log
-
 router = APIRouter()
 
 @router.post("/establish-connection")
 async def establish_connection():
     response = await establish_websocket_connections()
-    await log(response)
     return {"message": response}
 
 @router.get("/chain")

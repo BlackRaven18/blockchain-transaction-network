@@ -14,9 +14,38 @@ class MessageType(Enum):
     IDLE = {
         "source": args.id,
         "status": "idle"
-    }
+    },
+    CONDUCTING_VOTE = {
+        "source": args.id,
+        "status": "conducting-vote"
+    },
+    VOTING = {
+        "source": args.id,
+        "status": "voting"
+    },
+    MINING = {
+        "source": args.id,
+        "status": "mining"
+    },
+    VERIFING_BLOCK = {
+        "source": args.id,
+        "status": "verifying-block"
+    },
+    SAVING_TRANSACTION = {
+        "source": args.id,
+        "status": "saving-transaction"
+    },
+    SAVING_BLOCK = {
+        "source": args.id,
+        "status": "saving-block"
+    },
+    ADDING_CLIENT = {
+        "source": args.id,
+        "status": "adding-client"
+    },
 
 logger: WebSocketClient
+log_queue = []
 
 async def connect_to_logger():
     global logger
@@ -26,5 +55,11 @@ async def connect_to_logger():
     await logger.connect()
     print("Connected to logger")
 
+
+
 async def log(message: MessageType):
-    await logger.send(json.dumps(message.value))
+    global log_queue
+    
+    log_queue.append(message.value)
+
+    await logger.send(json.dumps(log_queue.pop(0)))
