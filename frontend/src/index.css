@@ -27,15 +27,10 @@ body,
 }
  
 div.customHandle {
-  width: 100%;
+  flex-direction: column;
+  display: flex;
+  flex-grow: 1;
   height: 100%;
-  background: blue;
-  position: absolute;
-  top: 0;
-  left: 0;
-  border-radius: 0;
-  transform: none;
-  border: none;
   opacity: 0;
 }
 
@@ -44,34 +39,3 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-
-.simple-floatingedges {
-  flex-direction: column;
-  display: flex;
-  flex-grow: 1;
-  height: 100%;
-}
- 
-.simple-floatingedges .react-flow__handle {
-  width: 8px;
-  height: 8px;
-}
- 
-.simple-floatingedges .react-flow__handle-top {
-  top: -15px;
-}
- 
-.simple-floatingedges .react-flow__handle-bottom {
-  bottom: -15px;
-}
- 
-.simple-floatingedges .react-flow__handle-left {
-  left: -15px;
-}
- 
-.simple-floatingedges .react-flow__handle-right {
-  right: -15px;
-}
-
-
-

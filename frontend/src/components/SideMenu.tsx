@@ -5,6 +5,8 @@ import { useState } from "react";
 
 export default function SideMenu() {
 
+    const { showEdges } = useBlockchain()
+
     const { toggleAnimation, animateServerEdges } = useBlockchain()
     const [isLoggerRunning, setIsLoggerRunning] = useState(false)
     const [isNetworkRunning, setIsNetworkRunning] = useState(false)
@@ -23,6 +25,7 @@ export default function SideMenu() {
     const connectNodes = async () => {
         await establishConnections()
         setIsNodesConnected(true)
+        showEdges()
     }
 
     return (

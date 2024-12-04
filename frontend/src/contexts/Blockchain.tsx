@@ -7,6 +7,7 @@ const BlockchainContext = createContext({
     nodes: [] as BlockchainNode[],
     flowNodes: [] as Node[],
     flowEdges: [] as Edge[],
+    showEdges: () => { },
     toggleAnimation: () => { },
     animateServerEdges: (nodeId: string) => { },
     updateNodeState: (nodeId: string, state: string) => { },
@@ -29,9 +30,13 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
             .then((config) => {
                 setNodes(config.nodes)
                 getFlowNodes(config.nodes)
-                getFlowEdges(config.nodes)
+                 getFlowEdges(config.nodes)
             })
             .catch((err) => console.log(err))
+    }
+
+    const showEdges = () => {
+        getFlowEdges(nodes)
     }
 
     const getFlowNodes = (nodes: BlockchainNode[]) => {
@@ -48,9 +53,9 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
             return {
                 id: node.id,
                 position: { x, y },
-                data: { 
+                data: {
                     label: node.id,
-                    state: "undefined",
+                    state: "down",
                 },
                 type: "floating",
             };
@@ -103,15 +108,14 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
         console.log("Updating node state...")
         console.log("Node ID:", nodeId)
         console.log("Node state:", state)
-        const updatedNodes = flowNodes.map((node) =>
-            node.id === nodeId ? { ...node, data: { ...node.data, state: state } } : node
-        );
-        console.log("Updated nodes:", updatedNodes);
-        setFlowNodes(updatedNodes);
+
+        setFlowNodes((prevNodes) =>
+            prevNodes.map((node) => node.id === nodeId ? { ...node, data: { ...node.data, state: state } } : node)
+        )
     }
 
     return (
-        <BlockchainContext.Provider value={{ nodes, flowNodes, flowEdges, toggleAnimation, animateServerEdges, updateNodeState }}>
+        <BlockchainContext.Provider value={{ nodes, flowNodes, flowEdges, showEdges, toggleAnimation, animateServerEdges, updateNodeState }}>
             {children}
         </BlockchainContext.Provider>
     )

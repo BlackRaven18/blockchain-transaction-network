@@ -13,7 +13,7 @@ const nodeTypes = {
 
 export default function CustomFlow() {
     const { flowNodes, flowEdges } = useBlockchain()
-
+    
     return (
         <ReactFlow
             nodes={flowNodes}

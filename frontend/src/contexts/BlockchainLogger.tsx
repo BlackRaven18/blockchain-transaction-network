@@ -36,7 +36,11 @@ export const BlockchainLoggerProvider = ({ children }: PropsWithChildren) => {
       } = useWebSocket(loggerURL, {
 
         onOpen: () => console.log('opened'),
-        onMessage: (message) => handleOnMessage(message.data),
+        onMessage: (message) => {
+            handleOnMessage(message.data)
+            // setTimeout(() => {
+            // }, 1500);
+        },
         onClose: () => console.log('closed'),
         //Will attempt to reconnect on all close events, such as server shutting down
         shouldReconnect: (closeEvent) => true,
