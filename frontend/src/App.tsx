@@ -7,8 +7,33 @@ import Header from './components/Header';
 import SideMenu from './components/SideMenu';
 import { BlockchainProvider } from './contexts/Blockchain';
 import { BlockchainLoggerProvider } from './contexts/BlockchainLogger';
+import { useEffect } from 'react';
 
 function App() {
+
+    // Remove the resizeObserver error
+    useEffect(() => {
+        const errorHandler = (e: any) => {
+            if (
+                e.message.includes(
+                    "ResizeObserver loop completed with undelivered notifications" ||
+                    "ResizeObserver loop limit exceeded"
+                )
+            ) {
+                const resizeObserverErr = document.getElementById(
+                    "webpack-dev-server-client-overlay"
+                );
+                if (resizeObserverErr) {
+                    resizeObserverErr.style.display = "none";
+                }
+            }
+        };
+        window.addEventListener("error", errorHandler);
+
+        return () => {
+            window.removeEventListener("error", errorHandler);
+        };
+    }, []);
 
     return (
         <BlockchainProvider >
