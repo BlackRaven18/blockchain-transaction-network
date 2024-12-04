@@ -78,6 +78,9 @@ async def check_if_should_mine_block():
     if blockchain.should_mine_block():
         print("Should mine block...")
         await broadcast_action("mine-block", {}, receive_responses=False)
+        return True
+
+    return False
 
 def save_transaction(transaction: Transaction):
     blockchain = get_blockchain()
