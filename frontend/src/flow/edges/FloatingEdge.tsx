@@ -9,7 +9,7 @@ interface FloatingEdgeProps {
     markerEnd?: string;
     style?: React.CSSProperties;
     data?: {
-        showAnimation?: boolean; 
+        showAnimation?: boolean;
     };
 }
 
@@ -35,9 +35,16 @@ function FloatingEdge({ id, source, target, markerEnd, style, data }: FloatingEd
         <>
             <BaseEdge path={edgePath} markerEnd={markerEnd} />
             {data?.showAnimation && (
-                <circle r="8" fill="#ff0073">
-                    <animateMotion dur="2s" repeatCount="indefinite" path={edgePath} />
-                </circle>
+                <g>
+                    <path
+                        d="M2,2 L14,2 L14,10 L2,10 Z M2,2 L8,6 L14,2"
+                        fill="#ff0073"
+                        stroke="black"
+                        strokeWidth="0.5"
+                    >
+                        <animateMotion dur="2s" repeatCount="indefinite" path={edgePath} />
+                    </path>
+                </g>
             )}
         </>
     );

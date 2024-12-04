@@ -9,7 +9,6 @@ const BlockchainContext = createContext({
     flowEdges: [] as Edge[],
     showEdges: () => { },
     toggleAnimation: () => { },
-    animateServerEdges: (nodeId: string) => { },
     updateNodeState: (nodeId: string, state: string) => { },
 });
 
@@ -30,7 +29,7 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
             .then((config) => {
                 setNodes(config.nodes)
                 getFlowNodes(config.nodes)
-                 getFlowEdges(config.nodes)
+                // getFlowEdges(config.nodes)
             })
             .catch((err) => console.log(err))
     }
@@ -95,7 +94,7 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
         setFlowEdges(updatedEdges);
     }
 
-    const animateServerEdges = (nodeId: string) => {
+    const turnOnServerEdgesAdnimation = (nodeId: string) => {
 
         const updatedEdges = flowEdges.map((edge) => (
             edge.source === nodeId ? { ...edge, data: { ...edge.data, showAnimation: true } } : edge
@@ -104,18 +103,33 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
         setFlowEdges(updatedEdges);
     }
 
+    const turnOffServerEdgesAdnimation = (nodeId: string) => {
+
+        const updatedEdges = flowEdges.map((edge) => (
+            edge.source === nodeId ? { ...edge, data: { ...edge.data, showAnimation: false } } : edge
+        ))
+
+        setFlowEdges(updatedEdges);
+    }
+
     const updateNodeState = (nodeId: string, state: string) => {
-        console.log("Updating node state...")
-        console.log("Node ID:", nodeId)
-        console.log("Node state:", state)
+        // console.log("Updating node state...")
+        // console.log("Node ID:", nodeId)
+        // console.log("Node state:", state)
 
         setFlowNodes((prevNodes) =>
             prevNodes.map((node) => node.id === nodeId ? { ...node, data: { ...node.data, state: state } } : node)
         )
+
+        if (state === "idle" || state === "down") {
+            turnOffServerEdgesAdnimation(nodeId)
+        } else {
+            turnOnServerEdgesAdnimation(nodeId)
+        }
     }
 
     return (
-        <BlockchainContext.Provider value={{ nodes, flowNodes, flowEdges, showEdges, toggleAnimation, animateServerEdges, updateNodeState }}>
+        <BlockchainContext.Provider value={{ nodes, flowNodes, flowEdges, showEdges, toggleAnimation, updateNodeState }}>
             {children}
         </BlockchainContext.Provider>
     )
