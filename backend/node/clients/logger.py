@@ -11,6 +11,10 @@ class MessageType(Enum):
         "source": args.id,
         "status": "idle"
     },
+    DOWN = {
+        "source": args.id,
+        "status": "down"
+    },
     IDLE = {
         "source": args.id,
         "status": "idle"

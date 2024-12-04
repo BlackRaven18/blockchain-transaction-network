@@ -22,7 +22,7 @@ async def lifespan(app: FastAPI):
 
     yield
 
-    pass
+    await log(MessageType.DOWN)
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(websocket.router)
