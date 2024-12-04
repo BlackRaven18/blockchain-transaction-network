@@ -16,8 +16,21 @@ const establishConnections = async () => {
 }
 
 const getConfig = async (): Promise<BlockchainConfig> => {
-    return await axios
-        .get(`${LAUNCHER_URL}/config`)
+    return await axios.get(`${LAUNCHER_URL}/config`)
+        .then((response) => response.data)
+}
+
+const getNodeBlockchain = async (nodeId: string) => {
+
+    const config = await getConfig()
+
+    const node = config.nodes.find((node) => node.id === nodeId)
+
+    if (!node) {
+        throw new Error("Node not found")
+    }
+
+    return await axios.get(`http://${node.host}:${node.port}/api/v1/chain`)
         .then((response) => response.data)
 }
 
@@ -26,4 +39,5 @@ export {
     startNetwork,
     establishConnections,
     getConfig,
+    getNodeBlockchain,
 }
