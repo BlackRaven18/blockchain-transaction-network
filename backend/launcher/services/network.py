@@ -32,7 +32,7 @@ def start_nodes():
 
 
 async def establish_connections():
-    async with httpx.AsyncClient(timeout=10) as client:
+    async with httpx.AsyncClient(timeout=20) as client:
         tasks = [
             client.post(
                 f"http://{node['host']}:{node['port']}/api/v1/establish-connection",

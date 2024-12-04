@@ -3,13 +3,10 @@ import useWebSocket from 'react-use-websocket';
 import { getConfig } from "../api/launcher";
 import { useBlockchain } from "./Blockchain";
 
-const BlockchainLoggerContext = createContext({
-    isConnected: false
-})
+const BlockchainLoggerContext = createContext({});
 
 export const BlockchainLoggerProvider = ({ children }: PropsWithChildren) => {
     const { updateNodeState } = useBlockchain();
-    const [isConnected, setIsConnected] = useState(false);
     const [loggerURL, setLoggerURL] = useState("");
 
     useEffect(() => {
@@ -38,17 +35,16 @@ export const BlockchainLoggerProvider = ({ children }: PropsWithChildren) => {
         onOpen: () => console.log('opened'),
         onMessage: (message) => {
             handleOnMessage(message.data)
-            // setTimeout(() => {
-            // }, 1500);
         },
         onClose: () => console.log('closed'),
+
         //Will attempt to reconnect on all close events, such as server shutting down
         shouldReconnect: (closeEvent) => true,
 
       });
 
     return (
-        <BlockchainLoggerContext.Provider value={{ isConnected }}>
+        <BlockchainLoggerContext.Provider value={{}}>
             {children}
         </BlockchainLoggerContext.Provider>
     )

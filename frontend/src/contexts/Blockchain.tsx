@@ -8,8 +8,8 @@ const BlockchainContext = createContext({
     flowNodes: [] as Node[],
     flowEdges: [] as Edge[],
     showEdges: () => { },
-    toggleAnimation: () => { },
     updateNodeState: (nodeId: string, state: string) => { },
+    resetServerEdgesAnimations: () => { },
 });
 
 export const BlockchainProvider = ({ children }: PropsWithChildren) => {
@@ -45,7 +45,7 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
 
             const angle = (2 * Math.PI * index) / numberOfNodes;
 
-            // Obliczanie pozycji węzła na okręgu
+            // Calculating node position on the circle
             const x = radius * Math.cos(angle);
             const y = radius * Math.sin(angle);
 
@@ -77,24 +77,13 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
                         color: '#b1b1b7',
                     },
                 };
-            }).filter(edge => edge.source !== edge.target) // Usuwamy wartości null
+            }).filter(edge => edge.source !== edge.target) // removing self-connected edges
         );
 
         setFlowEdges(initialEdges);
     }
 
-    const toggleAnimation = () => {
-        const updatedEdges = flowEdges.map((edge) => ({
-            ...edge,
-            data: {
-                ...edge.data,
-                showAnimation: !edge.data?.showAnimation,
-            }
-        }));
-        setFlowEdges(updatedEdges);
-    }
-
-    const turnOnServerEdgesAdnimation = (nodeId: string) => {
+    const turnOnServerEdgesAnimation = (nodeId: string) => {
 
         const updatedEdges = flowEdges.map((edge) => (
             edge.source === nodeId ? { ...edge, data: { ...edge.data, showAnimation: true } } : edge
@@ -103,7 +92,7 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
         setFlowEdges(updatedEdges);
     }
 
-    const turnOffServerEdgesAdnimation = (nodeId: string) => {
+    const turnOffServerEdgesAnimation = (nodeId: string) => {
 
         const updatedEdges = flowEdges.map((edge) => (
             edge.source === nodeId ? { ...edge, data: { ...edge.data, showAnimation: false } } : edge
@@ -112,24 +101,31 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
         setFlowEdges(updatedEdges);
     }
 
+    const resetServerEdgesAnimations = () => {
+
+        const updatedEdges = flowEdges.map((edge) => (
+            { ...edge, data: { ...edge.data, showAnimation: false } }
+        ))
+
+        setFlowEdges(updatedEdges);
+    }
+
     const updateNodeState = (nodeId: string, state: string) => {
-        // console.log("Updating node state...")
-        // console.log("Node ID:", nodeId)
-        // console.log("Node state:", state)
 
         setFlowNodes((prevNodes) =>
             prevNodes.map((node) => node.id === nodeId ? { ...node, data: { ...node.data, state: state } } : node)
         )
-
+        
         if (state === "idle" || state === "down") {
-            turnOffServerEdgesAdnimation(nodeId)
+            console.log("turning off animation in node " + nodeId)
+            turnOffServerEdgesAnimation(nodeId)
         } else {
-            turnOnServerEdgesAdnimation(nodeId)
+            turnOnServerEdgesAnimation(nodeId)
         }
     }
 
     return (
-        <BlockchainContext.Provider value={{ nodes, flowNodes, flowEdges, showEdges, toggleAnimation, updateNodeState }}>
+        <BlockchainContext.Provider value={{ nodes, flowNodes, flowEdges, showEdges, updateNodeState, resetServerEdgesAnimations }}>
             {children}
         </BlockchainContext.Provider>
     )

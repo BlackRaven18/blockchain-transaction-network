@@ -31,7 +31,6 @@ export default function CustomFlow() {
                 nodes={flowNodes}
                 edges={flowEdges}
                 onNodeClick={(event, node) => handleOpenModal(node)}
-                onNodesChange={() => { }}
                 edgeTypes={edgeTypes}
                 nodeTypes={nodeTypes}
                 fitView
