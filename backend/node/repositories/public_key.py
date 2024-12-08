@@ -25,7 +25,6 @@ def get_public_key(client_id: str) -> str | None:
 
     return None
 
-#TODO: Add DTO dlass to represent key_data
 def add_public_key(key_data: PublicKey) -> str:
     print("Adding key...")
 
