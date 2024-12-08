@@ -7,6 +7,8 @@ const BlockchainContext = createContext({
     nodes: [] as BlockchainNode[],
     flowNodes: [] as Node[],
     flowEdges: [] as Edge[],
+    isNetworkStarting: false,
+    setIsNetworkStarting: (value: boolean) => { },
     showEdges: () => { },
     updateNodeState: (nodeId: string, state: string) => { },
     resetServerEdgesAnimations: () => { },
@@ -16,6 +18,7 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
     const [nodes, setNodes] = useState<BlockchainNode[]>([])
     const [flowNodes, setFlowNodes] = useState<Node[]>([])
     const [flowEdges, setFlowEdges] = useState<Edge[]>([])
+    const [isNetworkStarting, setIsNetworkStarting] = useState(false)
 
     // flow nodes radius 
     const radius = 150;
@@ -29,7 +32,7 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
             .then((config) => {
                 setNodes(config.nodes)
                 getFlowNodes(config.nodes)
-                // getFlowEdges(config.nodes)
+                getFlowEdges(config.nodes)
             })
             .catch((err) => console.log(err))
     }
@@ -115,17 +118,32 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
         setFlowNodes((prevNodes) =>
             prevNodes.map((node) => node.id === nodeId ? { ...node, data: { ...node.data, state: state } } : node)
         )
-        
-        if (state === "idle" || state === "down") {
-            console.log("turning off animation in node " + nodeId)
-            turnOffServerEdgesAnimation(nodeId)
-        } else {
-            turnOnServerEdgesAnimation(nodeId)
+
+        if (state !== "down") {
+            setIsNetworkStarting(false)
         }
+
+        // if (state === "idle" || state === "down") {
+        //     console.log("turning off animation in node " + nodeId)
+        //     turnOffServerEdgesAnimation(nodeId)
+        // } else {
+        //     turnOnServerEdgesAnimation(nodeId)
+        // }
     }
 
     return (
-        <BlockchainContext.Provider value={{ nodes, flowNodes, flowEdges, showEdges, updateNodeState, resetServerEdgesAnimations }}>
+        <BlockchainContext.Provider
+            value={{
+                nodes,
+                flowNodes,
+                flowEdges,
+                isNetworkStarting,
+                setIsNetworkStarting,
+                showEdges,
+                updateNodeState,
+                resetServerEdgesAnimations
+            }}
+        >
             {children}
         </BlockchainContext.Provider>
     )
