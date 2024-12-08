@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from routers import network
+from routers import network, websocket
 
 app = FastAPI()
 app.add_middleware(
@@ -12,3 +12,4 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(network.router, prefix="/api/v1")
+app.include_router(websocket.router)

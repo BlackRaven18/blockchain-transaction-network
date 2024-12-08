@@ -1,4 +1,4 @@
-from clients.http import get_network_config
+from clients.launcher import get_network_config
 from schemas.node import Node
 
 config = {

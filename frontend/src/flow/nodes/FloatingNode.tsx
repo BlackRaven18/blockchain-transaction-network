@@ -49,7 +49,7 @@ export default function FloatingNode({ id, data }: NodeProps) {
                 <Stack direction={"column"} style={{ alignItems: "center" }}>
                     {id}
                     <Divider sx={{ width: "100%", bgcolor: "black" }} />
-                    <Typography style={{ fontSize: "10px" }}>{"state:" + data?.state || "no info"}</Typography>
+                    <Typography style={{ fontSize: "10px" }}>{data?.state || "no info"}</Typography>
                     {data?.state === "down" && <PowerOffIcon />}
                     {data?.state === "idle" && <IdleHourglass />}
                     {data?.state !== "idle" && data?.state !== "down" && <BusyHourglass />}
