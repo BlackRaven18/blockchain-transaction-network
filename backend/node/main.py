@@ -7,6 +7,7 @@ from contextlib import asynccontextmanager
 from routers import websocket
 from routers import api
 
+from clients.launcher import confirm_readiness
 from clients.redis import RedisClient
 from clients.logger import connect_to_logger, log, MessageType
 
@@ -19,6 +20,7 @@ async def lifespan(app: FastAPI):
     init_config()
     RedisClient.get_client()
     await connect_to_logger()
+    await confirm_readiness()
     await log(MessageType.STARTUP)
 
     yield
