@@ -9,7 +9,7 @@ interface NodeProps {
 }
 
 const BusyHourglass = styled(HourglassBottomIcon)({
-    animation: "spin 2s linear infinite", // Define the animation
+    animation: "spin 2s linear infinite",
     "@keyframes spin": {
         "0%": { transform: "rotate(0deg)" },
         "100%": { transform: "rotate(360deg)" },
@@ -17,7 +17,7 @@ const BusyHourglass = styled(HourglassBottomIcon)({
 });
 
 const IdleHourglass = styled(HourglassBottomIcon)({
-    animation: "bounce 2s linear infinite", // Define the animation
+    animation: "bounce 2s linear infinite",
     "@keyframes bounce": {
       "0%": { transform: "rotate(45deg)" },
       "50%": { transform: "rotate(-45deg)" },

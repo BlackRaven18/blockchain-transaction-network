@@ -1,12 +1,12 @@
-import { Button, Modal, Box } from "@mui/material";
+import { Box, Button, Modal } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { dracula } from "react-syntax-highlighter/dist/esm/styles/hljs";
-import { getNodeBlockchain } from "../../api/launcher";
-import { JsonView, allExpanded, darkStyles, defaultStyles } from "react-json-view-lite";
+import { JsonView, allExpanded, darkStyles } from "react-json-view-lite";
+import { getNodeBlockchain, getNodeRegisteredClients } from "../../api/launcher";
 
 interface JSONModalProps {
     nodeId: string,
+    buttonTitle: string,
+    action: "get-blockchain" | "get-clients"
 }
 
 const style = {
@@ -36,18 +36,31 @@ export default function JSONModal(props: JSONModalProps) {
     };
 
     useEffect(() => {
-        getNodeBlockchain(props.nodeId)
-            .then((response) => setData(response))
-            .catch((error) => {
-                console.log(error)
-                setData('Could not fetch data')
-            });
+
+        if(props.action === "get-blockchain") {
+            getNodeBlockchain(props.nodeId)
+                .then((response) => setData(response))
+                .catch((error) => {
+                    console.log(error)
+                    setData('Could not fetch blockchain')
+                });
+        } else if(props.action === "get-clients") {
+            getNodeRegisteredClients(props.nodeId)
+                .then((response) => setData(response))
+                .catch((error) => {
+                    console.log(error)
+                    setData('Could not fetch clients')
+                })
+        } else {
+            setData('Unknown action, sorry...')
+        }
+
     }, [open])
 
 
     return (
         <React.Fragment>
-            <Button variant="contained" onClick={handleOpen}>Show chain</Button>
+            <Button variant="contained" onClick={handleOpen}>{props.buttonTitle}</Button>
             <Modal
                 open={open}
                 onClose={handleClose}
@@ -55,9 +68,6 @@ export default function JSONModal(props: JSONModalProps) {
                 aria-describedby="child-modal-description"
             >
                 <Box sx={style}>
-                    {/* <SyntaxHighlighter language="json" style={dracula}>
-                        {JSON.stringify(data, null, 2)}
-                    </SyntaxHighlighter> */}
                     <JsonView data={data} shouldExpandNode={allExpanded} style={darkStyles} />
                 </Box>
             </Modal>
