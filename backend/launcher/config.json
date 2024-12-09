@@ -2,7 +2,7 @@
     "logger_port": 9000,
     "max_block_size": 2,
     "min_approvals_to_accept_transaction": 2,
-    "mining_difficulty": 5,
+    "mining_difficulty": 4,
     "nodes": [
         {
             "id": "server1",
