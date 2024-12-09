@@ -1,7 +1,8 @@
-import { Divider, Icon, Stack, styled, Typography } from '@mui/material';
+import { Divider, Stack, styled, Typography } from '@mui/material';
 import { Handle, Position, useConnection } from '@xyflow/react';
 import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 import PowerOffIcon from '@mui/icons-material/PowerOff';
+import { Dangerous } from '@mui/icons-material';
 
 interface NodeProps {
     id: string;
@@ -19,11 +20,24 @@ const BusyHourglass = styled(HourglassBottomIcon)({
 const IdleHourglass = styled(HourglassBottomIcon)({
     animation: "bounce 2s linear infinite",
     "@keyframes bounce": {
-      "0%": { transform: "rotate(45deg)" },
-      "50%": { transform: "rotate(-45deg)" },
-      "100%": { transform: "rotate(45deg)" },
+        "0%": { transform: "rotate(45deg)" },
+        "50%": { transform: "rotate(-45deg)" },
+        "100%": { transform: "rotate(45deg)" },
     },
-  });
+});
+
+const showIcon = (state: string) => {
+    switch (state) {
+        case "down":
+            return <PowerOffIcon />;
+        case "damaged":
+            return <Dangerous />;
+        case "idle":
+            return <IdleHourglass />;
+        default:
+            return <BusyHourglass />;
+    }
+}
 
 export default function FloatingNode({ id, data }: NodeProps) {
     const connection = useConnection();
@@ -50,9 +64,8 @@ export default function FloatingNode({ id, data }: NodeProps) {
                     {id}
                     <Divider sx={{ width: "100%", bgcolor: "black" }} />
                     <Typography style={{ fontSize: "10px" }}>{data?.state || "no info"}</Typography>
-                    {data?.state === "down" && <PowerOffIcon />}
-                    {data?.state === "idle" && <IdleHourglass />}
-                    {data?.state !== "idle" && data?.state !== "down" && <BusyHourglass />}
+
+                    {showIcon(data?.state || "idle")}
                 </Stack>
             </div>
         </div>

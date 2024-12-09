@@ -6,6 +6,8 @@ from services.network import establish_websocket_connections
 
 from repositories.client import get_clients
 
+from error_flags import ErrorFlags
+
 router = APIRouter()
 
 @router.post("/establish-connection")
@@ -26,3 +28,21 @@ async def get_retistered_clients():
     clients = get_clients()
 
     return {"clients": clients}
+
+@router.get("/health")
+async def health_check():
+    response = ErrorFlags().serialize()
+    return {"message": response}
+
+@router.post("/inject-node-damage-error")
+async def inject_node_damage_error():
+    response = await ErrorFlags().set_node_damage_error()
+
+    return {"message": response}
+
+
+@router.post("/reset-node-damage-error")
+async def reset_node_damage_error():
+    response = await ErrorFlags().reset_node_damage_error()
+
+    return {"message": response}

@@ -15,6 +15,8 @@ from services.network import broadcast_action, send_file_to_client
 
 from clients.logger import log, MessageType
 
+from error_flags import ErrorFlags
+
 router = APIRouter()
 
 active_connections: List[WebSocket] = []
@@ -25,9 +27,15 @@ log_queue = []
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     active_connections.append(websocket)
+        
     try:
         while True:
             message = await websocket.receive_text()
+            
+            if ErrorFlags().node_damage_error:
+                await websocket.send_text("Node damage error")
+                continue
+
             response = await handle_message(message)
 
             if response is not None:

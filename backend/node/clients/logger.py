@@ -47,6 +47,10 @@ class MessageType(Enum):
         "source": args.id,
         "status": "adding-client"
     },
+    NODE_DAMAGE_ERROR = {
+        "source": args.id,
+        "status": "damaged"
+    },
 
 logger: WebSocketClient
 log_queue = []
