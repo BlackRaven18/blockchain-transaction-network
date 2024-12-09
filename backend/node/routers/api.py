@@ -32,7 +32,7 @@ async def get_retistered_clients():
 @router.get("/health")
 async def health_check():
     response = ErrorFlags().serialize()
-    return {"message": response}
+    return {"result": response}
 
 @router.post("/inject-node-damage-error")
 async def inject_node_damage_error():

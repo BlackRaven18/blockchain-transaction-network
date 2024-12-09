@@ -1,12 +1,12 @@
 import { Box, Button, Modal } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { JsonView, allExpanded, darkStyles } from "react-json-view-lite";
-import { getNodeBlockchain, getNodeRegisteredClients } from "../../api/launcher";
+import { getNodeBlockchain, getNodeHealth, getNodeRegisteredClients } from "../../api/node";
 
 interface JSONModalProps {
     nodeId: string,
     buttonTitle: string,
-    action: "get-blockchain" | "get-clients"
+    action: "get-blockchain" | "get-clients" | "health-check"
 }
 
 const style = {
@@ -51,6 +51,14 @@ export default function JSONModal(props: JSONModalProps) {
                     console.log(error)
                     setData('Could not fetch clients')
                 })
+        } else if(props.action === "health-check") {
+            getNodeHealth(props.nodeId)
+                .then((response) => setData(response))
+                .catch((error) => {
+                    console.log(error)
+                    setData('Could not fetch health check')
+                })
+            
         } else {
             setData('Unknown action, sorry...')
         }

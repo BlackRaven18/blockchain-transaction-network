@@ -1,5 +1,5 @@
 import { Button, Divider, Modal, Stack, Typography } from "@mui/material";
-import { postInjectNodeDamageError, postResetNodeDamageError } from "../../api/launcher";
+import { postInjectNodeDamageError, postResetNodeDamageError } from "../../api/node";
 import JSONModal from "./JSONModal";
 
 interface NodeModalProps {
@@ -37,8 +37,13 @@ export default function NodeModal(props: NodeModalProps) {
                     <Typography variant="h6" sx={{ paddingTop: "20px" }}>Error Injection</Typography>
                     <Divider sx={{ width: "100%", bgcolor: "black" }} />
 
-                    <Button variant="contained" onClick={() => injectNodeDamageError()}>Inject Node Damage</Button>
-                    <Button variant="contained" onClick={() => resetNodeDamageError()}>Reset Node Damage</Button>
+                    <JSONModal nodeId={props.selectedNode?.id} buttonTitle="Health Check" action="health-check" />
+
+                    <Divider sx={{ width: "100%", fontSize: "18px" }} > Inject Node Damage Error</Divider>
+                    <Stack direction={"row"} spacing={2}>
+                        <Button variant="contained" onClick={() => injectNodeDamageError()}>Inject Node Damage</Button>
+                        <Button variant="contained" onClick={() => resetNodeDamageError()}>Reset Node Damage</Button>
+                    </Stack>
                 </Stack>
             </Modal>
         </>
