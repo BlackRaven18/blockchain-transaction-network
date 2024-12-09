@@ -10,8 +10,11 @@ class RedisClient:
         print("Initializing Redis database...")
         if cls._client is not None:
             blockchain = Blockchain()
-            cls._client.set('blockchan', blockchain.model_dump_json())
-
+            try:
+                cls._client.set('blockchan', blockchain.model_dump_json())
+            except Exception as e:
+                print(f"Error connecting to Redis server: {e}")
+                exit(1)
     @classmethod
     def get_client(cls):
         if cls._client is None:

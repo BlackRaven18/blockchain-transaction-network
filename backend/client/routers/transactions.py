@@ -33,6 +33,6 @@ async def new_transaction(
     transaction = Transaction(sender=args.id, recipient=recipient_id, data=base64.b64encode(file_content).decode('utf-8'))
     print("Transaction: " + str(transaction.model_dump_json()))
 
-    await send_transaction(server_url, server_port.value, transaction)
+    response = await send_transaction(server_url, server_port.value, transaction)
 
-    return {"message": "Transaction proposal submitted."}
+    return {"message": response}

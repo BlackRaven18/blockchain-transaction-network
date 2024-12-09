@@ -18,5 +18,6 @@ async def send_transaction(server_url: str, server_port: int, transaction: Trans
             await websocket.send(json.dumps(payload))
             response = await websocket.recv()
             print(response)
+            return response
     except Exception as e:
         print(f"Could not send transaction to {server_url}:{server_port} - {e}")

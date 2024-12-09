@@ -4,7 +4,7 @@ from repositories.blockchain import get_blockchain
 
 from services.network import establish_websocket_connections
 
-from repositories.public_key import get_public_keys
+from repositories.client import get_clients
 
 router = APIRouter()
 
@@ -22,7 +22,7 @@ async def get_current_transactions():
     return {"transactions": get_blockchain().current_transactions}
 
 @router.get("/clients")
-async def get_clients():
-    clients = get_public_keys()
+async def get_retistered_clients():
+    clients = get_clients()
 
     return {"clients": clients}
