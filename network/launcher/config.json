@@ -5,7 +5,7 @@
     "mining_difficulty": 4,
     "nodes": [
         {
-            "id": "server1",
+            "id": "Node_1",
             "host": "localhost",
             "port": 8001,
             "db": {
@@ -15,7 +15,7 @@
             }
         },
         {
-            "id": "server2",
+            "id": "Node_2",
             "host": "localhost",
             "port": 8002,
             "db": {
@@ -25,7 +25,7 @@
             }
         },
         {
-            "id": "server3",
+            "id": "Node_3",
             "host": "localhost",
             "port": 8003,
             "db": {

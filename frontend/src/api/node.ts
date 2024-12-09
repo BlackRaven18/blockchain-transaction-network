@@ -89,6 +89,27 @@ const postResetTransactionVoteError = async (nodeId: string) => {
     return await axios.post(`http://${node.host}:${node.port}/api/v1/reset-transaction-vote-error`)
 }
 
+const postInjectBlockMiningError = async (nodeId: string) => {
+
+    const node = await getNode(nodeId);
+
+    if (!node) {
+        throw new Error("Node not found")
+    }
+
+    return await axios.post(`http://${node.host}:${node.port}/api/v1/inject-block-mining-error`)
+}
+
+const postResetBlockMiningError = async (nodeId: string) => {
+
+    const node = await getNode(nodeId);
+
+    if (!node) {
+        throw new Error("Node not found")
+    }
+
+    return await axios.post(`http://${node.host}:${node.port}/api/v1/reset-block-mining-error`)
+}
 
 export {
     getNodeBlockchain,
@@ -97,5 +118,7 @@ export {
     postInjectNodeDamageError,
     postResetNodeDamageError,
     postInjectTransactionVoteError,
-    postResetTransactionVoteError
+    postResetTransactionVoteError,
+    postInjectBlockMiningError,
+    postResetBlockMiningError,
 }

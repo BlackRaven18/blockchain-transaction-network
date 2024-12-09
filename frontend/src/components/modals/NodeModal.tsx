@@ -1,6 +1,8 @@
-import { Button, Divider, Modal, Stack, Typography } from "@mui/material";
-import { postInjectNodeDamageError, postInjectTransactionVoteError, postResetNodeDamageError, postResetTransactionVoteError } from "../../api/node";
+import { Backdrop, Button, CircularProgress, Divider, Modal, Stack, Typography } from "@mui/material";
+import { postInjectBlockMiningError, postInjectNodeDamageError, postInjectTransactionVoteError, postResetBlockMiningError, postResetNodeDamageError, postResetTransactionVoteError } from "../../api/node";
 import JSONModal from "./JSONModal";
+import { useState } from "react";
+import { AxiosResponse } from "axios";
 
 interface NodeModalProps {
     open: boolean;
@@ -9,22 +11,23 @@ interface NodeModalProps {
 }
 
 export default function NodeModal(props: NodeModalProps) {
+    const [loading, setLoading] = useState(false);
 
-    const injectNodeDamageError = async () => {
-        await postInjectNodeDamageError(props.selectedNode?.id);
-    }
+    const withLoadingDelay = async (action: () => Promise<AxiosResponse>) => {
+        setLoading(true);
+        await action();
+        setTimeout(() => {
+            setLoading(false);
+        }, 1500);
+    };
 
-    const resetNodeDamageError = async () => {
-        await postResetNodeDamageError(props.selectedNode?.id);
-    }
 
-    const injectTransactionVoteError = async () => {
-        await postInjectTransactionVoteError(props.selectedNode?.id);
-    }
-
-    const resetTransactionVoteError = async () => {
-        await postResetTransactionVoteError(props.selectedNode?.id);
-    }
+    const injectNodeDamageError = () => withLoadingDelay(() => postInjectNodeDamageError(props.selectedNode?.id));
+    const resetNodeDamageError = () => withLoadingDelay(() => postResetNodeDamageError(props.selectedNode?.id));
+    const injectTransactionVoteError = () => withLoadingDelay(() => postInjectTransactionVoteError(props.selectedNode?.id));
+    const resetTransactionVoteError = () => withLoadingDelay(() => postResetTransactionVoteError(props.selectedNode?.id));
+    const injectBlockMiningError = () => withLoadingDelay(() => postInjectBlockMiningError(props.selectedNode?.id));
+    const resetBlockMiningError = () => withLoadingDelay(() => postResetBlockMiningError(props.selectedNode?.id));
 
     return (
         <>
@@ -48,20 +51,42 @@ export default function NodeModal(props: NodeModalProps) {
 
                     <Divider sx={{ width: "100%", fontSize: "18px" }} > Inject Node Damage Error</Divider>
                     <Stack direction={"row"} spacing={2}>
-                        <Button variant="contained" onClick={() => injectNodeDamageError()}>Inject Node Damage</Button>
-                        <Button variant="contained" onClick={() => resetNodeDamageError()}>Reset Node Damage</Button>
+                        <Button variant="contained" onClick={injectNodeDamageError}>Inject Node Damage</Button>
+                        <Button variant="contained" onClick={resetNodeDamageError}>Reset Node Damage</Button>
                     </Stack>
 
                     <Divider sx={{ width: "100%", fontSize: "18px" }} > Inject Transaction Vote Error</Divider>
                     <Stack direction={"row"} spacing={2}>
-                        <Button variant="contained" onClick={() => injectTransactionVoteError()}>Inject Transaction Vote Error</Button>
-                        <Button variant="contained" onClick={() => resetTransactionVoteError()}>Reset Transaction Vote Error</Button>
+                        <Button variant="contained" onClick={injectTransactionVoteError}>Inject Transaction Vote Error</Button>
+                        <Button variant="contained" onClick={resetTransactionVoteError}>Reset Transaction Vote Error</Button>
                     </Stack>
+
+                    <Divider sx={{ width: "100%", fontSize: "18px" }} > Inject Block Mining Error</Divider>
+                    <Stack direction={"row"} spacing={2}>
+                        <Button variant="contained" onClick={injectBlockMiningError}>Inject Block Mining Error</Button>
+                        <Button variant="contained" onClick={resetBlockMiningError}>Reset Block Mining Error</Button>
+                    </Stack>
+
+                    <LoadingBackdrop open={loading} />
 
                 </Stack>
             </Modal>
         </>
     )
+}
+
+const LoadingBackdrop = ({ open }: { open: boolean }) => {
+    return (
+        <Backdrop
+            sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+            open={open}
+        >
+            <Stack direction={"column"} spacing={2} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <CircularProgress color="inherit" />
+                <h3>Loading...</h3>
+            </Stack>
+        </Backdrop>
+    );
 }
 
 const style = {

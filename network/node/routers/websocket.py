@@ -114,7 +114,13 @@ async def handle_message(message: str):
             await log(MessageType.IDLE)
             
         elif action == "mine-block":
+
+            if ErrorFlags().block_mining_error:
+                await log(MessageType.IDLE)
+                return response
+            
             await log(MessageType.MINING)
+            
             mine_block()
 
         elif action == "cancel-and-verify-block":

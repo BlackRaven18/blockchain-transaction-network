@@ -59,3 +59,17 @@ async def reset_transaction_vote_error():
     response = ErrorFlags().reset_transaction_vote_error()
 
     return {"message": response}
+
+
+@router.post("/inject-block-mining-error")
+async def inject_block_mining_error():
+    response = ErrorFlags().set_block_mining_error()
+
+    return {"message": response}
+
+
+@router.post("/reset-block-mining-error")
+async def reset_block_mining_error():
+    response = ErrorFlags().reset_block_mining_error()
+
+    return {"message": response}
