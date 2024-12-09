@@ -67,6 +67,28 @@ const postResetNodeDamageError = async (nodeId: string) => {
     return await axios.post(`http://${node.host}:${node.port}/api/v1/reset-node-damage-error`)
 }
 
+const postInjectTransactionVoteError = async (nodeId: string) => {
+
+    const node = await getNode(nodeId);
+
+    if (!node) {
+        throw new Error("Node not found")
+    }
+
+    return await axios.post(`http://${node.host}:${node.port}/api/v1/inject-transaction-vote-error`)
+}
+
+const postResetTransactionVoteError = async (nodeId: string) => {
+
+    const node = await getNode(nodeId);
+
+    if (!node) {
+        throw new Error("Node not found")
+    }    
+
+    return await axios.post(`http://${node.host}:${node.port}/api/v1/reset-transaction-vote-error`)
+}
+
 
 export {
     getNodeBlockchain,
@@ -74,4 +96,6 @@ export {
     getNodeHealth,
     postInjectNodeDamageError,
     postResetNodeDamageError,
+    postInjectTransactionVoteError,
+    postResetTransactionVoteError
 }

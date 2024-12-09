@@ -88,6 +88,11 @@ async def handle_message(message: str):
         elif action == "vote":
             await log(MessageType.VOTING)
             transaction = Transaction(**json.loads(payload))
+
+            if ErrorFlags().transaction_vote_error:
+                await log(MessageType.IDLE)
+                return "invalid"
+            
             result = verify_transaction(transaction)
             response = result
 

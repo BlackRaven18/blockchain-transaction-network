@@ -46,3 +46,16 @@ async def reset_node_damage_error():
     response = await ErrorFlags().reset_node_damage_error()
 
     return {"message": response}
+
+@router.post("/inject-transaction-vote-error")
+async def inject_transaction_vote_error():
+    response = ErrorFlags().set_transaction_vote_error()
+
+    return {"message": response}
+
+
+@router.post("/reset-transaction-vote-error")
+async def reset_transaction_vote_error():
+    response = ErrorFlags().reset_transaction_vote_error()
+
+    return {"message": response}

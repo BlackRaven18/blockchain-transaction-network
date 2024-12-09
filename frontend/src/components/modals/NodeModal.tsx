@@ -1,5 +1,5 @@
 import { Button, Divider, Modal, Stack, Typography } from "@mui/material";
-import { postInjectNodeDamageError, postResetNodeDamageError } from "../../api/node";
+import { postInjectNodeDamageError, postInjectTransactionVoteError, postResetNodeDamageError, postResetTransactionVoteError } from "../../api/node";
 import JSONModal from "./JSONModal";
 
 interface NodeModalProps {
@@ -18,6 +18,14 @@ export default function NodeModal(props: NodeModalProps) {
         await postResetNodeDamageError(props.selectedNode?.id);
     }
 
+    const injectTransactionVoteError = async () => {
+        await postInjectTransactionVoteError(props.selectedNode?.id);
+    }
+
+    const resetTransactionVoteError = async () => {
+        await postResetTransactionVoteError(props.selectedNode?.id);
+    }
+
     return (
         <>
             <Modal
@@ -29,7 +37,6 @@ export default function NodeModal(props: NodeModalProps) {
                 <Stack direction={"column"} spacing={2} sx={style}>
                     <Typography variant="h5">{props.selectedNode?.id}</Typography>
                     <Divider sx={{ width: "100%", bgcolor: "black" }} />
-                    {/* <Button variant="contained" onClick={() => { }}>Connect to other nodes</Button> */}
 
                     <JSONModal nodeId={props.selectedNode?.id} buttonTitle="Show blockchain" action="get-blockchain" />
                     <JSONModal nodeId={props.selectedNode?.id} buttonTitle="Show registered clients" action="get-clients" />
@@ -44,6 +51,13 @@ export default function NodeModal(props: NodeModalProps) {
                         <Button variant="contained" onClick={() => injectNodeDamageError()}>Inject Node Damage</Button>
                         <Button variant="contained" onClick={() => resetNodeDamageError()}>Reset Node Damage</Button>
                     </Stack>
+
+                    <Divider sx={{ width: "100%", fontSize: "18px" }} > Inject Transaction Vote Error</Divider>
+                    <Stack direction={"row"} spacing={2}>
+                        <Button variant="contained" onClick={() => injectTransactionVoteError()}>Inject Transaction Vote Error</Button>
+                        <Button variant="contained" onClick={() => resetTransactionVoteError()}>Reset Transaction Vote Error</Button>
+                    </Stack>
+
                 </Stack>
             </Modal>
         </>
