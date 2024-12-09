@@ -33,8 +33,10 @@ export default function NodeModal(props: NodeModalProps) {
                 <Stack direction={"column"} spacing={2} sx={style}>
                     <Typography variant="h5">{props.selectedNode?.id}</Typography>
                     <Divider sx={{ width: "100%", bgcolor: "black" }} />
-                    <Button variant="contained" onClick={() => { }}>Connect to other nodes</Button>
-                    <JSONModal nodeId={props.selectedNode?.id}/>
+                    {/* <Button variant="contained" onClick={() => { }}>Connect to other nodes</Button> */}
+
+                    <JSONModal nodeId={props.selectedNode?.id} buttonTitle="Show blockchain" action="get-blockchain"/>
+                    <JSONModal nodeId={props.selectedNode?.id} buttonTitle="Show registered clients" action="get-clients"/>
                 </Stack>
             </Modal>
         </>

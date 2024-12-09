@@ -4,12 +4,14 @@ import uvicorn
 
 from routers import transactions
 from routers import network
+from routers import websocket
 
 from args import args
 
 app = FastAPI()
 app.include_router(network.router, prefix="/api/v1")
 app.include_router(transactions.router, prefix="/api/v1")
+app.include_router(websocket.router)
 
 def main():
     uvicorn.run(

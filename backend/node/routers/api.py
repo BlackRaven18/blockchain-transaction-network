@@ -1,10 +1,10 @@
 from fastapi import APIRouter
 
-from args import args
-
 from repositories.blockchain import get_blockchain
 
 from services.network import establish_websocket_connections
+
+from repositories.client import get_clients
 
 router = APIRouter()
 
@@ -21,6 +21,8 @@ async def get_chain():
 async def get_current_transactions():
     return {"transactions": get_blockchain().current_transactions}
 
-@router.get("/id")
-async def get_id():
-    return {"id": args.id}
+@router.get("/clients")
+async def get_retistered_clients():
+    clients = get_clients()
+
+    return {"clients": clients}

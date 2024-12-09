@@ -5,7 +5,7 @@ from cryptography.hazmat.primitives import serialization
 
 from services.cryptography import public_key
 
-from schemas.public_key import PublicKey
+from schemas.client import Client
 
 from args import args
 
@@ -15,8 +15,10 @@ async def share_public_key(server_url: str, server_port: int) -> str:
     try:
         async with websockets.connect(f"ws://{server_url}:{server_port}/ws") as websocket:
 
-            client_public_key = PublicKey(
-                owner=args.id, 
+            client_public_key = Client(
+                id=args.id,
+                host=args.host,
+                port=args.port, 
                 key=public_key.public_bytes(serialization.Encoding.PEM, serialization.PublicFormat.PKCS1).decode('utf-8')
             )
 

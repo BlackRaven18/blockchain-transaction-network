@@ -42,3 +42,17 @@ async def send_action(url, payload):
             return response
     except Exception as e:
         print(f"Could not send transaction to {url} - {e}")
+
+async def send_file_to_client(host, port, payload):
+
+    url = f"ws://{host}:{port}/ws"
+    print("Sending file to client...")
+    print("Sending payload: " + str(payload))
+    print("url: " + url)
+
+    try:
+        async with websockets.connect(url) as websocket:
+            await websocket.send(payload)
+            print("File sent to recipient")
+    except Exception as e:
+        print(f"Could not send transaction to {url} - {e}")

@@ -9,9 +9,7 @@ const BlockchainContext = createContext({
     flowEdges: [] as Edge[],
     isNetworkStarting: false,
     setIsNetworkStarting: (value: boolean) => { },
-    showEdges: () => { },
-    updateNodeState: (nodeId: string, state: string) => { },
-    resetServerEdgesAnimations: () => { },
+    updateNodeState: (nodeId: string, state: string) => { }
 });
 
 export const BlockchainProvider = ({ children }: PropsWithChildren) => {
@@ -86,24 +84,6 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
         setFlowEdges(initialEdges);
     }
 
-    const turnOnServerEdgesAnimation = (nodeId: string) => {
-
-        const updatedEdges = flowEdges.map((edge) => (
-            edge.source === nodeId ? { ...edge, data: { ...edge.data, showAnimation: true } } : edge
-        ))
-
-        setFlowEdges(updatedEdges);
-    }
-
-    const turnOffServerEdgesAnimation = (nodeId: string) => {
-
-        const updatedEdges = flowEdges.map((edge) => (
-            edge.source === nodeId ? { ...edge, data: { ...edge.data, showAnimation: false } } : edge
-        ))
-
-        setFlowEdges(updatedEdges);
-    }
-
     const resetServerEdgesAnimations = () => {
 
         const updatedEdges = flowEdges.map((edge) => (
@@ -122,13 +102,6 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
         if (state !== "down") {
             setIsNetworkStarting(false)
         }
-
-        // if (state === "idle" || state === "down") {
-        //     console.log("turning off animation in node " + nodeId)
-        //     turnOffServerEdgesAnimation(nodeId)
-        // } else {
-        //     turnOnServerEdgesAnimation(nodeId)
-        // }
     }
 
     return (
@@ -139,9 +112,7 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
                 flowEdges,
                 isNetworkStarting,
                 setIsNetworkStarting,
-                showEdges,
                 updateNodeState,
-                resetServerEdgesAnimations
             }}
         >
             {children}

@@ -5,11 +5,10 @@ import { useBlockchain } from "../contexts/Blockchain";
 
 export default function SideMenu() {
 
-    const { isNetworkStarting, setIsNetworkStarting, resetServerEdgesAnimations } = useBlockchain()
+    const { isNetworkStarting, setIsNetworkStarting } = useBlockchain()
 
     const [isLoggerRunning, setIsLoggerRunning] = useState(false)
     const [isNetworkReady, setIsNetworkReady] = useState(false)
-    // const [isNetworkRunning, setIsNetworkRunning] = useState(false)
 
     const launchLogger = async () => {
         await startLogger()
@@ -22,8 +21,6 @@ export default function SideMenu() {
         await startNetwork()
 
         setIsNetworkReady(true)
-
-        // setIsNetworkRunning(true)
     }
 
     return (
@@ -31,7 +28,6 @@ export default function SideMenu() {
             <Stack direction={"column"} spacing={5} sx={styles.container}>
                 <Button variant="contained" disabled={isLoggerRunning} onClick={async () => await launchLogger()}> Start logger </Button>
                 <Button variant="contained" disabled={!isLoggerRunning || isNetworkReady} onClick={async () => launchNetwork()}>Start Network</Button>
-                <Button variant="contained" disabled={!isNetworkStarting || !isNetworkReady} onClick={async () => resetServerEdgesAnimations()}>Reset Edges Animations (optional)</Button>
             </Stack>
 
             <Backdrop

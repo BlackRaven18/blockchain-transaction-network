@@ -3,15 +3,15 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 import json
 from typing import List
 
-from schemas.public_key import PublicKey
+from schemas.client import Client
 from schemas.transaction import Transaction
 from schemas.block import Block
 
-from repositories.public_key import add_public_key
+from repositories.client import add_client, get_client
 
 from services.cryptography import verify_transaction
 from services.blockchain import conduct_vote, save_transaction, save_block, check_if_should_mine_block, mine_block, cancel_mine_block, verify_block
-from services.network import broadcast_action
+from services.network import broadcast_action, send_file_to_client
 
 from clients.logger import log, MessageType
 
@@ -59,6 +59,10 @@ async def handle_message(message: str):
             await log(MessageType.CONDUCTING_VOTE)
             result = await conduct_vote(transaction)
 
+            if result == "Transaction accepted":
+                recipient = get_client(transaction.recipient)
+                await send_file_to_client(recipient.host, recipient.port, transaction.data)
+
             await log(MessageType.IDLE)
 
             response = result
@@ -91,8 +95,8 @@ async def handle_message(message: str):
         elif action == "accept-client":
             await log(MessageType.ADDING_CLIENT
                       )
-            public_key = PublicKey(**json.loads(payload))
-            response = add_public_key(public_key)
+            client = Client(**json.loads(payload))
+            response = add_client(client)
 
             await log(MessageType.IDLE)
             

@@ -1,26 +1,33 @@
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding
+
 from schemas.transaction import Transaction
-from repositories.public_key import get_public_key
 
+from repositories.client import get_client
 
-def verify_transaction(transaction: Transaction) -> bool:
+def verify_transaction(transaction: Transaction) -> str:
 
     if not transaction.signature:
         print("No signature to verify")
-        return False  # No signature to verify
+        return "invalid"  # No signature to verify
     
-    public_key_pem = get_public_key(transaction.sender)
+    sender = get_client(transaction.sender)
 
-    if public_key_pem is None:
-        print("Public key not found")
-        return False
+    if sender is None:
+        print("Sender not registered as network client")
+        return "invalid"
     
-    public_key = serialization.load_pem_public_key(public_key_pem.encode('utf-8'))
+    receiver = get_client(transaction.recipient)
+
+    if receiver is None:
+        print("Receiver not registered as network client")
+        return "invalid"
+    
+    sender_public_key = serialization.load_pem_public_key(sender.key.encode('utf-8'))
 
     serialized_data = transaction.serialize()
     try:
-        public_key.verify(
+        sender_public_key.verify(
             bytes.fromhex(transaction.signature),
             serialized_data.encode('utf-8'),
             padding.PSS(

@@ -9,4 +9,5 @@ class Transaction(BaseModel):
     signature: Optional[str] = None
 
     def serialize(self) -> str:
+         print("data"+ self.data)
          return json.dumps(self.model_dump(exclude={"signature"}), sort_keys=True)
