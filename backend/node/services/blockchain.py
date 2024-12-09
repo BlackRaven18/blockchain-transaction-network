@@ -110,6 +110,7 @@ async def conduct_vote(transaction: Transaction):
             votes_counter += 1
 
     if votes_counter >= get_config()["min_approvals_to_accept_transaction"]:
-        return await broadcast_action("accept-transaction", transaction.model_dump_json())
+        await broadcast_action("accept-transaction", transaction.model_dump_json())
+        return "Transaction accepted"
     
     return "Transaction rejected"

@@ -7,11 +7,11 @@ from schemas.client import Client
 from schemas.transaction import Transaction
 from schemas.block import Block
 
-from repositories.client import add_client
+from repositories.client import add_client, get_client
 
 from services.cryptography import verify_transaction
 from services.blockchain import conduct_vote, save_transaction, save_block, check_if_should_mine_block, mine_block, cancel_mine_block, verify_block
-from services.network import broadcast_action
+from services.network import broadcast_action, send_file_to_client
 
 from clients.logger import log, MessageType
 
@@ -58,6 +58,10 @@ async def handle_message(message: str):
 
             await log(MessageType.CONDUCTING_VOTE)
             result = await conduct_vote(transaction)
+
+            if result == "Transaction accepted":
+                recipient = get_client(transaction.recipient)
+                await send_file_to_client(recipient.host, recipient.port, transaction.data)
 
             await log(MessageType.IDLE)
 
