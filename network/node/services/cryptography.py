@@ -1,3 +1,5 @@
+from typing import Literal
+
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding
 
@@ -5,7 +7,7 @@ from schemas.transaction import Transaction
 
 from repositories.client import get_client
 
-def verify_transaction(transaction: Transaction) -> str:
+def verify_transaction(transaction: Transaction) -> Literal["valid", "invalid"]:
 
     if not transaction.signature:
         print("No signature to verify")

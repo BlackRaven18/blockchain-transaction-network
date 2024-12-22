@@ -35,10 +35,6 @@ export const BlockchainProvider = ({ children }: PropsWithChildren) => {
             .catch((err) => console.log(err))
     }
 
-    const showEdges = () => {
-        getFlowEdges(nodes)
-    }
-
     const getFlowNodes = (nodes: BlockchainNode[]) => {
         const numberOfNodes = nodes.length;
 
