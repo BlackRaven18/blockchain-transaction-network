@@ -33,6 +33,36 @@
                 "port": 63791,
                 "index": 2
             }
+        },
+        {
+            "id": "Node_4",
+            "host": "localhost",
+            "port": 8004,
+            "db": {
+                "host": "localhost",
+                "port": 63791,
+                "index": 3
+            }
+        },
+        {
+            "id": "Node_5",
+            "host": "localhost",
+            "port": 8005,
+            "db": {
+                "host": "localhost",
+                "port": 63791,
+                "index": 4
+            }
+        },
+        {
+            "id": "Node_6",
+            "host": "localhost",
+            "port": 8006,
+            "db": {
+                "host": "localhost",
+                "port": 63791,
+                "index": 5
+            }
         }
     ]
 }

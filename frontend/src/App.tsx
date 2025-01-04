@@ -46,7 +46,7 @@ function App() {
                     }}>
                         <Header />
                         <Grid2 container sx={{ flex: 1 }}>
-                            <Grid2 size={4} sx={{ backgroundColor: '#716b50' }}>
+                            <Grid2 size={4} sx={{ backgroundColor: '#02a0ce' }}>
                                 <SideMenu />
                             </Grid2>
                             <Grid2 size={8}>

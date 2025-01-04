@@ -3,11 +3,14 @@ import useWebSocket from 'react-use-websocket';
 import { getConfig } from "../api/launcher";
 import { useBlockchain } from "./Blockchain";
 
-const BlockchainLoggerContext = createContext({});
+const BlockchainLoggerContext = createContext({
+    loggerHistory: [] as string[]
+});
 
 export const BlockchainLoggerProvider = ({ children }: PropsWithChildren) => {
     const { updateNodeState } = useBlockchain();
     const [loggerURL, setLoggerURL] = useState("");
+    const [loggerHistory, setLoggerHistory] = useState<string[]>([]);
 
     useEffect(() => {
         getConfig()
@@ -20,7 +23,8 @@ export const BlockchainLoggerProvider = ({ children }: PropsWithChildren) => {
     const handleOnMessage = (message: string) => {
         const data = JSON.parse(message);
         console.log("Received message:", data);
-        updateNodeState(data[0].source, data[0].status);
+        updateNodeState(data.source, data.status);
+        loggerHistory.push(`${data.timestamp}: ${data.source} - ${data.status}`);
     }
 
     const {
@@ -30,7 +34,7 @@ export const BlockchainLoggerProvider = ({ children }: PropsWithChildren) => {
         lastJsonMessage,
         readyState,
         getWebSocket,
-      } = useWebSocket(loggerURL, {
+    } = useWebSocket(loggerURL, {
 
         onOpen: () => console.log('opened'),
         onMessage: (message) => {
@@ -41,10 +45,10 @@ export const BlockchainLoggerProvider = ({ children }: PropsWithChildren) => {
         //Will attempt to reconnect on all close events, such as server shutting down
         shouldReconnect: (closeEvent) => true,
 
-      });
+    });
 
     return (
-        <BlockchainLoggerContext.Provider value={{}}>
+        <BlockchainLoggerContext.Provider value={{ loggerHistory }}>
             {children}
         </BlockchainLoggerContext.Provider>
     )
