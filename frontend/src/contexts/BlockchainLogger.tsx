@@ -24,7 +24,10 @@ export const BlockchainLoggerProvider = ({ children }: PropsWithChildren) => {
         const data = JSON.parse(message);
         console.log("Received message:", data);
         updateNodeState(data.source, data.status);
-        loggerHistory.push(`${data.timestamp}: ${data.source} - ${data.status}`);
+        const updatedLoggerHistory = [`${data.timestamp}: ${data.source} - ${data.status}`, ...loggerHistory ];
+        //loggerHistory.push(`${data.timestamp}: ${data.source} - ${data.status}`);
+        setLoggerHistory(value => [`${data.timestamp}: ${data.source} - ${data.status}`, ...value ]);
+        
     }
 
     const {
