@@ -2,10 +2,7 @@ import { Backdrop, Box, Button, CircularProgress, Divider, Stack, TextField, Typ
 import { useEffect, useRef, useState } from "react";
 import { startLogger, startNetwork } from "../api/launcher";
 import { useBlockchain } from "../contexts/Blockchain";
-import { JsonView, allExpanded, darkStyles } from "react-json-view-lite";
 import { useBlockchainLogger } from "../contexts/BlockchainLogger";
-import TextareaAutosize from 'react-textarea-autosize';
-import { text } from "stream/consumers";
 
 export default function SideMenu() {
 
@@ -16,16 +13,6 @@ export default function SideMenu() {
 
     const [isLoggerRunning, setIsLoggerRunning] = useState(false)
     const [isNetworkReady, setIsNetworkReady] = useState(false)
-
-    useEffect(() => {
-        if (logContainterRef.current) {
-          // Przewiń do dołu po każdej aktualizacji `loggerHistory`
-          logContainterRef.current.scrollTo({
-            top: logContainterRef.current.scrollHeight,
-            behavior: "smooth", // Płynne przewijanie
-          });
-        }
-      }, [loggerHistory]);
 
     const launchLogger = async () => {
         await startLogger()
