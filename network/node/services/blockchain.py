@@ -6,6 +6,7 @@ from schemas.transaction import Transaction
 from schemas.block import Block
 
 from services.network import broadcast_action
+from clients.logger import log, MessageType
 
 from repositories.blockchain import get_blockchain, save_blockchain
 
@@ -57,7 +58,7 @@ async def handle_mining_result(mine_block_task: asyncio.Task):
         print("Minned block: " + str(mined_block.model_dump_json()))
 
         if mined_block is not None and mine_block_task.cancelled() is not True:
-            print("I mined a block!!!!")
+            await log(MessageType.MINNED_BLOCK)
             responses = await broadcast_action("cancel-and-verify-block", mined_block.model_dump_json())
 
             print("Block mining results: " + str(responses))
